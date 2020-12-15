@@ -1,9 +1,10 @@
 import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
+import SignInForm from './pages/Auth/SignInForm';
 import './App.css';
+/* import { Switch } from '@material-ui/core';
+import { Route } from 'react-router'; */
 
-function App() {
+/* function App() {
   return (
     <div className="App">
       <header className="App-header">
@@ -53,6 +54,19 @@ function App() {
       </header>
     </div>
   );
+} */
+
+function App() {
+  return(
+    <SignInForm />
+  )
 }
 
-export default App;
+ export default App;
+
+/* export default () => {
+  <Switch>
+    <Route exact path="/" component={SignInForm} ></Route>
+  </Switch>
+};
+ */
