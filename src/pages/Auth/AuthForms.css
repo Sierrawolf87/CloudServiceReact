@@ -1,3 +1,8 @@
+body {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
 .main {
   width: 100vw;
   height: 100vh;
@@ -31,22 +36,34 @@
   border-radius: 8px;
 }
 
-.signInForm input[type=text] {
-  width: 100%;
-}
-
 .signInForm img {
   width: 50px;
   height: 50px;
 }
 
-.ButtonDiv {
+.ButtonDivAuth {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.ButtonDivForgot {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+      -ms-flex-pack: end;
+          justify-content: flex-end;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
       -ms-flex-direction: row;
@@ -73,6 +90,7 @@
 }
 
 .alert {
+  max-width: 80vw;
   position: absolute;
   bottom: 50px;
 }

@@ -2,17 +2,15 @@ import { Box, Button, Slide, TextField, Typography } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import React from 'react';
 import { connect } from 'react-redux';
-import { signIn, clearError } from './AuthSlice';
+import { ForgotPassword, clearError, clearSuccess } from './AuthSlice';
 import './AuthForms.css';
-import { withRouter } from 'react-router-dom';
 
 
-class SignInForm extends React.Component{
+class ForgotPasswordForm extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            username: "",
-            password: ""
+            username: ""
         }
     }
 
@@ -23,7 +21,19 @@ class SignInForm extends React.Component{
         };
         return (
                 <Slide className="alert" direction="up" in={!open} mountOnEnter unmountOnExit>
-                    <Alert  severity="error">{this.props.auth.error}</Alert>
+                    <Alert severity="error">{this.props.auth.error}</Alert>
+                </Slide>
+        )
+    }
+
+    renderSuccessAlert() {
+        let open = this.props.auth.success === "";
+        if (!open) {
+            setTimeout(() => this.props.clearSuccess(), 5000);
+        };
+        return (
+                <Slide className="alert" direction="up" in={!open} mountOnEnter unmountOnExit>
+                    <Alert severity="success">{this.props.auth.success}</Alert>
                 </Slide>
         )
     }
@@ -39,18 +49,17 @@ class SignInForm extends React.Component{
             <Box className="main">
                 <Box className="signInForm" boxShadow={2}>
                     <Box className="logo">
-                        <img src="logo105.png" alt="Logo"/>
+                        <img src="../logo105.png" alt="Logo"/>
                         <Typography variant="h5">Cloud Service</Typography>
-                        <Typography variant="subtitle1">Вход</Typography>
+                        <Typography variant="subtitle1">Сброс пароля</Typography>
                     </Box>
                     <TextField id="authusername" label="Логин" variant="outlined" name="username" onChange={event => this.OnChangeInputs(event)} value={this.state.username}/>
-                    <TextField id="authpassword" type="password" label="Пароль" variant="outlined" name="password" onChange={event => this.OnChangeInputs(event)} value={this.state.password}/>
-                    <Box className="ButtonDivAuth">
-                        <Button onClick={() => this.props.history.push("/auth/ForgotPassword")}> Забыли пароль? </Button>
-                        <Button variant="contained" color="primary" onClick={() => this.props.signIn(this.state.username, this.state.password)}> Войти </Button>
+                    <Box className="ButtonDivForgot">
+                        <Button variant="contained" color="primary" onClick={() => this.props.ForgotPassword(this.state.username)}> Восстановить </Button>
                     </Box>
                 </Box>
                 {this.renderErrorAlert()}
+                {this.renderSuccessAlert()}
             </Box>
         )
     }
@@ -63,12 +72,13 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = () => dispatch => {
     return {
-        signIn: (username, password) => dispatch(signIn(username, password)),
-        clearError: () => dispatch(clearError())
+        ForgotPassword: (username) => dispatch(ForgotPassword(username)),
+        clearError: () => dispatch(clearError()),
+        clearSuccess: () => dispatch(clearSuccess())
     };
 };
 
-export default withRouter(connect(
+export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(SignInForm));
+)(ForgotPasswordForm);

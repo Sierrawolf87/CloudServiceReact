@@ -1,8 +1,9 @@
 import React from 'react';
-import SignInForm from './pages/Auth/SignInForm';
 import './App.css';
-/* import { Switch } from '@material-ui/core';
-import { Route } from 'react-router'; */
+import {Route, Switch, BrowserRouter} from "react-router-dom";
+import SignInForm from './pages/Auth/SignInForm';
+import ForgotPasswordForm from './pages/Auth/ForgotPasswordForm';
+import ResetPasswordForm from './pages/Auth/ResetPasswordForm';
 
 /* function App() {
   return (
@@ -56,17 +57,25 @@ import { Route } from 'react-router'; */
   );
 } */
 
-function App() {
+/* function App() {
   return(
     <SignInForm />
   )
 }
 
  export default App;
-
-/* export default () => {
-  <Switch>
-    <Route exact path="/" component={SignInForm} ></Route>
-  </Switch>
-};
  */
+
+function App() {
+  return(
+    <BrowserRouter>
+      <Switch>
+        <Route exact path="/auth/" component={SignInForm} ></Route>
+        <Route path="/auth/ForgotPassword" component={ForgotPasswordForm} ></Route>
+        <Route path="/auth/ResetPassword/:code" component={ResetPasswordForm}></Route>
+      </Switch>
+    </BrowserRouter>
+  )
+}
+
+export default App;
