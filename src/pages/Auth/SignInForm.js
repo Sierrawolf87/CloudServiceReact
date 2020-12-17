@@ -6,7 +6,6 @@ import { signIn, clearError } from './AuthSlice';
 import './AuthForms.css';
 import { withRouter } from 'react-router-dom';
 
-
 class SignInForm extends React.Component{
     constructor(props){
         super(props);
@@ -22,9 +21,9 @@ class SignInForm extends React.Component{
             setTimeout(() => this.props.clearError(), 5000);
         };
         return (
-                <Slide className="alert" direction="up" in={!open} mountOnEnter unmountOnExit>
-                    <Alert  severity="error">{this.props.auth.error}</Alert>
-                </Slide>
+            <Slide className="alert" direction="up" in={!open} mountOnEnter unmountOnExit>
+                <Alert  severity="error">{this.props.auth.error}</Alert>
+            </Slide>
         )
     }
 

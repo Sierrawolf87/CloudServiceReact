@@ -11,9 +11,9 @@ function App() {
     <BrowserRouter>
       <Switch>
         <Route exact path="/" component={Root} ></Route>
-        <Route path="/auth/" component={SignInForm} ></Route>
-        <Route path="/auth/ForgotPassword" component={ForgotPasswordForm} ></Route>
-        <Route path="/auth/ResetPassword/:code" component={ResetPasswordForm}></Route>
+        <Route exact path="/auth" component={SignInForm} ></Route>
+        <Route exact path="/auth/ForgotPassword" component={ForgotPasswordForm} ></Route>
+        <Route exact path="/auth/ResetPassword/:code" component={ResetPasswordForm}></Route>
       </Switch>
     </BrowserRouter>
   )

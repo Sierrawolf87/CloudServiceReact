@@ -1,14 +1,75 @@
 import React from 'react';
-import { Mail, Menu } from '@material-ui/icons';
-import { AppBar, Button, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography } from "@material-ui/core";
+import { AccountCircle, Mail, Menu } from '@material-ui/icons';
+import { AppBar, Button, Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText, MenuItem, Toolbar, Typography, Menu as UserMenu, Fade } from "@material-ui/core";
 import './TopAppBar.css';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { checkUser, signOut } from '../../pages/Auth/AuthSlice';
 
 class TopAppBar extends React.Component{
     constructor(props){
         super(props);
         this.state = {
             drawerOpen: false,
+            accountMenuOpen: null,
+            anchorEl: null
+        }
+        this.props.checkUser();
+    }
+
+    buuronOrMenu(){
+        const handleMenu = (event) => {
+            this.setState({
+                accountMenuOpen: true,
+                anchorEl: event.currentTarget
+            })
+        };
+        
+        const handleClose = () => {
+            this.setState({
+                accountMenuOpen: false,
+                anchorEl: null
+            })
+        };
+          
+        if (this.props.auth.userData.isAuthorized === true) {
+            return(
+                <div>
+                  <IconButton
+                    aria-label="account of current user"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    onClick={handleMenu}
+                    color="inherit"
+                  >
+                    <AccountCircle />
+                  </IconButton>
+                  <UserMenu
+                    id="menu-appbar"
+                    anchorEl={this.state.anchorEl}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right',
+                    }}
+                    open={this.state.accountMenuOpen}
+                    onClose={handleClose}
+                    TransitionComponent={Fade}
+                  >
+                    <MenuItem onClick={handleClose}>Профиль</MenuItem>
+                    <Divider />
+                    <MenuItem onClick={() => this.props.signOut()}>Выход</MenuItem>
+                  </UserMenu>
+                </div>
+            )
+        } else {
+            return (
+                <Button color="inherit" onClick={() => this.props.history.push("/auth")}>Войти</Button>
+            )
         }
     }
 
@@ -36,7 +97,6 @@ class TopAppBar extends React.Component{
                 <Divider />
             </div>
             );
-        
 
         return(
             <div className="root">
@@ -48,7 +108,7 @@ class TopAppBar extends React.Component{
                 <Typography variant="h6" className="title">
                   Cloud Service
                 </Typography>
-                <Button color="inherit" onClick={() => this.props.history.push("/auth")}>Войти</Button>
+                {this.buuronOrMenu()}
               </Toolbar>
             </AppBar>
                 <React.Fragment>
@@ -61,4 +121,18 @@ class TopAppBar extends React.Component{
     }
 }
 
-export default withRouter(TopAppBar);
+const mapStateToProps = state => ({
+    auth: state.auth
+})
+
+const mapDispatchToProps = () => dispatch => {
+    return {
+        checkUser: () => dispatch(checkUser()),
+        signOut: () => dispatch(signOut())
+    };
+};
+
+export default withRouter(connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(TopAppBar));

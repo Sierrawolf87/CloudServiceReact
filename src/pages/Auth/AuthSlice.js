@@ -6,6 +6,7 @@ export const authSlice = createSlice({
     name: 'Auth',
     initialState: {
         userData: {
+            role: "",
             token: "",
             user_id: "",
             isAuthorized: false,
@@ -15,12 +16,18 @@ export const authSlice = createSlice({
     },
     reducers: {
         AuthenticationSuccessful: (state, action) => {
-            state.token = action.payload.token;
-            state.user_id = action.payload.user_id;
-            state.isAuthorized = true;
+            state.userData.token = action.payload.token;
+            state.userData.user_id = action.payload.user_id;
+            state.userData.isAuthorized = true;
+        },
+        AuthenticationSignOut: (state) => {
+            state.userData.role = "";
+            state.userData.token = "";
+            state.userData.user_id = "";
+            state.userData.isAuthorized = false;
         },
         AuthenticationFailure: (state, action) => {
-            state.isAuthorized = false;
+            state.userData.isAuthorized = false;
             state.error = action.payload;
         },
         AlertSuccessful: (state, action) => {
@@ -31,11 +38,20 @@ export const authSlice = createSlice({
         },
         ClearAlertSuccess: (state) => {
             state.success = ""
+        },
+        CheckSuccessful: (state, action) => {
+            state.userData.token = action.payload.token;
+            state.userData.role = action.payload.token;
+            state.userData.isAuthorized = true;
+        },
+        CheckFailure: (state, action) => {
+            state.error = action.payload;
+            state.isAuthorized = false;
         }
     }
 });
 
-export const { AuthenticationSuccessful, AuthenticationFailure, AlertSuccessful, ClearAlertError, ClearAlertSuccess} = authSlice.actions;
+export const { AuthenticationSuccessful, AuthenticationSignOut, AuthenticationFailure, AlertSuccessful, ClearAlertError, ClearAlertSuccess, CheckSuccessful, CheckFailure} = authSlice.actions;
 
 export const authState = state => state.auth;
 
@@ -61,6 +77,11 @@ export const signIn = (username, password) => async dispatch => {
             dispatch(AuthenticationFailure(error.request.response));
     }
     );
+}
+
+export const signOut = () => async dispatch => {
+    localStorage.removeItem("TOKEN");
+    dispatch(AuthenticationSignOut());
 }
 
 export const ForgotPassword = (username) => async dispatch => {
@@ -115,8 +136,31 @@ const writeToSession = (data) => {
     localStorage.setItem("TOKEN", data.token);
 }
 
-export const getUserToken = () => {
-    return localStorage.getItem("TOKEN");
+export const checkUser = () => async dispatch => {
+    await axios({
+        url: "https://localhost:5001/api/users/auth/GetUserRole",
+        method: "GET",
+        timeout: 10000,
+        headers: {
+            Authorization: 'Bearer ' + localStorage.getItem("TOKEN")
+        }
+    })
+    .then(res => {
+        let data = {
+            token: localStorage.getItem("TOKEN"),
+            role: res.data
+        }
+        dispatch(CheckSuccessful(data));
+    })
+    .catch(error => {
+        let status = error.request.status;
+        if (status === 0)
+            dispatch(CheckFailure("Ошибка подключения к серверу"));
+        if (status === 401)
+            dispatch(CheckFailure(""));
+        else
+            dispatch(CheckFailure(error.request.response));
+    })
 }
 
 
