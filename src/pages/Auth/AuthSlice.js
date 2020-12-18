@@ -1,9 +1,12 @@
+/* eslint-disable no-unused-vars */
+import { Store } from '@material-ui/icons';
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 
 export const authSlice = createSlice({
-    name: 'Auth',
+    name: 'auth',
     initialState: {
         userData: {
             role: "",
@@ -52,8 +55,6 @@ export const authSlice = createSlice({
 });
 
 export const { AuthenticationSuccessful, AuthenticationSignOut, AuthenticationFailure, AlertSuccessful, ClearAlertError, ClearAlertSuccess, CheckSuccessful, CheckFailure} = authSlice.actions;
-
-export const authState = state => state.auth;
 
 export const signIn = (username, password) => async dispatch => {
     let formdata = new FormData();

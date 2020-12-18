@@ -11,7 +11,7 @@ class TopAppBar extends React.Component{
         super(props);
         this.state = {
             drawerOpen: false,
-            accountMenuOpen: null,
+            accountMenuOpen: false,
             anchorEl: null
         }
         this.props.checkUser();

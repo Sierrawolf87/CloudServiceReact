@@ -3,6 +3,6 @@ import AuthReduser from '../pages/Auth/AuthSlice';
 
 export default configureStore({
   reducer: {
-    auth: AuthReduser
+    auth: AuthReduser,
   },
 });
