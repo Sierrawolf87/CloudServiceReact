@@ -1,0 +1,14 @@
+.CSCatdRoot {
+  width: 300px;
+  height: 330px;
+  margin: 16px;
+  white-space: pre-wrap;
+}
+
+.CSCardTitle {
+  font-size: 14px;
+}
+
+.CSCardPos {
+  margin-bottom: 12px;
+}

@@ -36,6 +36,13 @@ class SignInForm extends React.Component {
   }
 
   render() {
+    const redirect = new URLSearchParams(this.props.location.search).get('redirectUrl');
+    if (this.props.auth.userData.isAuthorized && redirect !== '') {
+      window.location.replace(redirect);
+    }
+    if (this.props.auth.userData.isAuthorized === true) {
+      this.props.history.push('/');
+    }
     return (
       <Box className="main">
         <Box className="signInForm" boxShadow={2}>
@@ -47,7 +54,7 @@ class SignInForm extends React.Component {
           <TextField id="authusername" label="Логин" variant="outlined" name="username" onChange={(event) => this.OnChangeInputs(event)} value={this.state.username} />
           <TextField id="authpassword" type="password" label="Пароль" variant="outlined" name="password" onChange={(event) => this.OnChangeInputs(event)} value={this.state.password} />
           <Box className="ButtonDivAuth">
-            <Button onClick={() => this.props.history.push('/auth/ForgotPassword')}> Забыли пароль? </Button>
+            <Button onClick={() => this.props.history.push(`/auth/ForgotPassword?redirectUrl=${redirect}`)}> Забыли пароль? </Button>
             <Button variant="contained" color="primary" onClick={() => this.props.signIn(this.state.username, this.state.password)}> Войти </Button>
           </Box>
         </Box>

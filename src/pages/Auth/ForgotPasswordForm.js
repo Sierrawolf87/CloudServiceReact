@@ -46,6 +46,10 @@ class ForgotPasswordForm extends React.Component {
   }
 
   render() {
+    const redirect = new URLSearchParams(this.props.location.search).get('redirectUrl');
+    if (this.props.auth.userData.isAuthorized && redirect !== '') {
+      window.location.replace(redirect);
+    }
     return (
       <Box className="main">
         <Box className="signInForm" boxShadow={2}>

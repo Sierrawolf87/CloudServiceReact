@@ -71,7 +71,7 @@ class TopAppBar extends React.Component {
       );
     }
     return (
-      <Button color="inherit" onClick={() => this.props.history.push('/auth')}>Войти</Button>
+      <Button color="inherit" onClick={() => this.props.history.push(`/auth?redirectUrl=${window.location.href}`)}>Войти</Button>
     );
   }
 

@@ -40,7 +40,7 @@ export const authSlice = createSlice({
     },
     CheckSuccessful: (state, action) => {
       state.userData.token = action.payload.token;
-      state.userData.role = action.payload.token;
+      state.userData.role = action.payload.role;
       state.userData.isAuthorized = true;
     },
     CheckFailure: (state, action) => {

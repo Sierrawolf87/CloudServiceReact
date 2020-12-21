@@ -23,6 +23,7 @@
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
         "react/destructuring-assignment": "off",
         "react/prop-types": "off",
-        "no-param-reassign": "off"
+        "no-param-reassign": "off",
+        "no-console": "off"
     }
 }
