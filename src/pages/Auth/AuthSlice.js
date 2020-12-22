@@ -12,6 +12,7 @@ export const authSlice = createSlice({
     },
     error: '',
     success: '',
+    check: false,
   },
   reducers: {
     AuthenticationSuccessful: (state, action) => {
@@ -38,21 +39,26 @@ export const authSlice = createSlice({
     ClearAlertSuccess: (state) => {
       state.success = '';
     },
+    CheckStart: (state) => {
+      state.check = false;
+    },
     CheckSuccessful: (state, action) => {
       state.userData.token = action.payload.token;
       state.userData.role = action.payload.role;
       state.userData.isAuthorized = true;
+      state.check = true;
     },
     CheckFailure: (state, action) => {
       state.error = action.payload;
-      state.isAuthorized = false;
+      state.userData.isAuthorized = false;
+      state.check = true;
     },
   },
 });
 
 export const {
   AuthenticationSuccessful, AuthenticationSignOut, AuthenticationFailure, AlertSuccessful,
-  ClearAlertError, ClearAlertSuccess, CheckSuccessful, CheckFailure,
+  ClearAlertError, ClearAlertSuccess, CheckSuccessful, CheckFailure, CheckStart,
 } = authSlice.actions;
 
 const writeToSession = (data) => {
@@ -128,6 +134,7 @@ export const clearError = () => (dispatch) => dispatch(ClearAlertError());
 export const clearSuccess = () => (dispatch) => dispatch(ClearAlertSuccess());
 
 export const checkUser = () => async (dispatch) => {
+  dispatch(CheckStart());
   await axios({
     url: 'https://localhost:5001/api/users/auth/GetUserRole',
     method: 'GET',

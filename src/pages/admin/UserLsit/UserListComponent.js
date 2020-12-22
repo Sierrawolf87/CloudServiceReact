@@ -10,6 +10,7 @@ import { CSCard, CSCardSkeleton } from '../../../modules/components/CSCard/CSCar
 import { checkUser } from '../../Auth/AuthSlice';
 
 import './UserList.css';
+import { getUserList } from './UserListSlice';
 
 class UserListComponent extends React.Component {
   constructor(props) {
@@ -18,18 +19,12 @@ class UserListComponent extends React.Component {
       alert: {
         open: false,
       },
-      error: '',
-      list: [],
-      loading: true,
     };
+    this.props.getUserList();
   }
 
-  componentDidMount() {
-    this.getUser();
-  }
-
-  getUser() {
-    checkUser();
+  /* getUser() {
+    // checkUser();
     Axios({
       url: 'https://localhost:5001/api/users',
       method: 'GET',
@@ -58,7 +53,7 @@ class UserListComponent extends React.Component {
           loading: true,
         });
       });
-  }
+  } */
 
   renderAlertError() {
     const handleClose = (event, reason) => {
@@ -76,7 +71,7 @@ class UserListComponent extends React.Component {
     return (
       <Snackbar open={this.state.alert.open} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="error">
-          {this.state.error}
+          {this.props.userList.error}
         </Alert>
       </Snackbar>
     );
@@ -93,23 +88,24 @@ class UserListComponent extends React.Component {
         icon: <Delete />,
       },
     ];
-    if (this.state.loading === false) {
+    debugger;
+    if (this.props.userList.loading === false) {
       return (
         <Box className="userRoot">
-          {this.state.list.map((item) => (
+          {this.props.userList.userListData.map((item) => (
             <CSCard
               key={item.id}
               header={item.userName}
               title={item.initials}
               signature={item.role.name}
               body={
-                        `ID: ${item.id} \n`
-                        + `Фамилия: ${item.surname} \n`
-                        + `Имя: ${item.name} \n`
-                        + `Отчество: ${item.patronymic} \n`
-                        + `Студенческий: ${item.reportCard} \n`
-                        + `Email: ${item.email} \n`
-                    }
+              `ID: ${item.id} \n`
+              + `Фамилия: ${item.surname} \n`
+              + `Имя: ${item.name} \n`
+              + `Отчество: ${item.patronymic} \n`
+              + `Студенческий: ${item.reportCard} \n`
+              + `Email: ${item.email} \n`
+            }
               buttons={buttons}
             />
           ))}
@@ -133,11 +129,12 @@ class UserListComponent extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  userlist: state.userlist,
+  userList: state.userList,
 });
 
 const mapDispatchToProps = () => (dispatch) => ({
   checkUser: () => dispatch(checkUser()),
+  getUserList: () => dispatch(getUserList()),
 });
 
 export default withRouter(connect(

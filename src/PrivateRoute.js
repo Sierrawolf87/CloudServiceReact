@@ -1,16 +1,16 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
-import PropTypes from 'prop-types';
+import store from './app/store';
+import { checkUser } from './pages/Auth/AuthSlice';
 
-export const PrivateRouteForStudent = ({ component: Component, userData, ...rest }) => {
-  PrivateRouteForStudent.prototype = {
-    userData: {
-      isAuthorized: PropTypes.bool,
-      role: PropTypes.string,
-    },
-  };
+store.dispatch(checkUser());
 
+export const PrivateRouteForStudent = ({ component: Component, ...rest }) => {
+  const dispatch = useDispatch();
+  dispatch(checkUser());
+  const userData = useSelector((state) => state.auth.userData);
   if (userData.isAuthorized === true && userData.role === 'student') {
     return (
       <Route
@@ -30,7 +30,10 @@ export const PrivateRouteForStudent = ({ component: Component, userData, ...rest
     />
   );
 };
-export const PrivateRouteForTeacher = ({ component: Component, userData, ...rest }) => {
+export const PrivateRouteForTeacher = ({ component: Component, ...rest }) => {
+  const dispatch = useDispatch();
+  dispatch(checkUser());
+  const userData = useSelector((state) => state.auth.userData);
   if (userData.isAuthorized === true && userData.role === 'teacher') {
     return (
       <Route
@@ -50,7 +53,10 @@ export const PrivateRouteForTeacher = ({ component: Component, userData, ...rest
     />
   );
 };
-export const PrivateRouteForNetworkEditor = ({ component: Component, userData, ...rest }) => {
+export const PrivateRouteForNetworkEditor = ({ component: Component, ...rest }) => {
+  const dispatch = useDispatch();
+  dispatch(checkUser());
+  const userData = useSelector((state) => state.auth.userData);
   if (userData.isAuthorized === true && userData.role === 'network_editor') {
     return (
       <Route
@@ -70,23 +76,42 @@ export const PrivateRouteForNetworkEditor = ({ component: Component, userData, .
     />
   );
 };
-export const PrivateRouteForRoot = ({ component: Component, userData, ...rest }) => {
-  if (userData.isAuthorized === true && userData.role === 'root') {
+const PrivateRouteForRootComponent = ({ component: Component, ...rest }) => {
+  debugger;
+  if (rest.auth.check === true) {
+    if (rest.auth.userData.isAuthorized === true && rest.auth.userData.role === 'root') {
+      return (
+        <Route
+          {...rest}
+          render={(props) => (
+            <Component {...props} />
+          )}
+        />
+      );
+    }
     return (
       <Route
         {...rest}
         render={() => (
-          <Component {...props} />
+          <Redirect to={`/auth?redirectUrl=${window.location.href}`} />
         )}
       />
     );
   }
   return (
-    <Route
-      {...rest}
-      render={() => (
-        <Redirect to="/auth" />
-      )}
-    />
+    <h1>loading</h1>
   );
 };
+
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+const mapDispatchToProps = () => (dispatch) => ({
+  checkUser: () => dispatch(checkUser()),
+});
+
+export const PrivateRouteForRoot = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(PrivateRouteForRootComponent);

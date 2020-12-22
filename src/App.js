@@ -6,6 +6,12 @@ import SignInForm from './pages/Auth/SignInForm';
 import ForgotPasswordForm from './pages/Auth/ForgotPasswordForm';
 import ResetPasswordForm from './pages/Auth/ResetPasswordForm';
 import UserList from './pages/admin/UserLsit/UserList';
+import {
+  PrivateRouteForRoot,
+/*   PrivateRouteForNetworkEditor,
+  PrivateRouteForTeacher,
+  PrivateRouteForStudent, */
+} from './PrivateRoute';
 
 function App() {
   return (
@@ -15,7 +21,7 @@ function App() {
         <Route exact path="/auth" component={SignInForm} />
         <Route exact path="/auth/ForgotPassword" component={ForgotPasswordForm} />
         <Route exact path="/auth/ResetPassword/:code" component={ResetPasswordForm} />
-        <Route exact path="/admin/userlist" component={UserList} />
+        <PrivateRouteForRoot exact path="/admin/userlist" component={UserList} />
       </Switch>
     </BrowserRouter>
   );
