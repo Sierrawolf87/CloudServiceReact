@@ -1,12 +1,12 @@
 import {
-  Box, Button, Slide, TextField, Typography,
+  Box, Button, TextField, Typography,
 } from '@material-ui/core';
-import Alert from '@material-ui/lab/Alert';
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { signIn, clearError } from './AuthSlice';
 import './AuthForms.css';
+import CSAlert from '../../modules/Alerts/CSAlert';
 
 class SignInForm extends React.Component {
   constructor(props) {
@@ -21,18 +21,6 @@ class SignInForm extends React.Component {
     this.setState({
       [e.target.name]: e.target.value,
     });
-  }
-
-  renderErrorAlert() {
-    const open = this.props.auth.error === '';
-    if (!open) {
-      setTimeout(() => this.props.clearError(), 5000);
-    }
-    return (
-      <Slide className="alert" direction="up" in={!open} mountOnEnter unmountOnExit>
-        <Alert severity="error">{this.props.auth.error}</Alert>
-      </Slide>
-    );
   }
 
   render() {
@@ -57,7 +45,7 @@ class SignInForm extends React.Component {
             <Button variant="contained" color="primary" onClick={() => this.props.signIn(this.state.username, this.state.password)}> Войти </Button>
           </Box>
         </Box>
-        {this.renderErrorAlert()}
+        <CSAlert text={this.props.auth.error} variant="error" />
       </Box>
     );
   }

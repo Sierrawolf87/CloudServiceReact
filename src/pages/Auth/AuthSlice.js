@@ -15,6 +15,11 @@ export const authSlice = createSlice({
     check: false,
   },
   reducers: {
+    AuthenticationStart: (state) => {
+      state.userData.isAuthorized = false;
+      state.error = '';
+      state.success = '';
+    },
     AuthenticationSuccessful: (state, action) => {
       state.userData.token = action.payload.token;
       state.userData.user_id = action.payload.user_id;
@@ -57,8 +62,8 @@ export const authSlice = createSlice({
 });
 
 export const {
-  AuthenticationSuccessful, AuthenticationSignOut, AuthenticationFailure, AlertSuccessful,
-  ClearAlertError, ClearAlertSuccess, CheckSuccessful, CheckFailure, CheckStart,
+  AuthenticationStart, AuthenticationSuccessful, AuthenticationSignOut, AuthenticationFailure,
+  AlertSuccessful, ClearAlertError, ClearAlertSuccess, CheckSuccessful, CheckFailure, CheckStart,
 } = authSlice.actions;
 
 const writeToSession = (data) => {
@@ -66,6 +71,7 @@ const writeToSession = (data) => {
 };
 
 export const signIn = (username, password) => async (dispatch) => {
+  dispatch(AuthenticationStart());
   const formdata = new FormData();
   formdata.append('username', username);
   formdata.append('password', password);
@@ -92,6 +98,7 @@ export const signOut = () => async (dispatch) => {
 };
 
 export const ForgotPassword = (username) => async (dispatch) => {
+  dispatch(AuthenticationStart());
   const formdata = new FormData();
   formdata.append('username', username);
   await axios({
@@ -111,6 +118,7 @@ export const ForgotPassword = (username) => async (dispatch) => {
 };
 
 export const ResetPassword = (code, newPassword, confimPassword) => async (dispatch) => {
+  dispatch(AuthenticationStart());
   const formdata = new FormData();
   formdata.append('NewPassword', newPassword);
   formdata.append('ConfimPassword', confimPassword);
@@ -133,9 +141,9 @@ export const ResetPassword = (code, newPassword, confimPassword) => async (dispa
 export const clearError = () => (dispatch) => dispatch(ClearAlertError());
 export const clearSuccess = () => (dispatch) => dispatch(ClearAlertSuccess());
 
-export const checkUser = () => async (dispatch) => {
+export const checkUser = () => (dispatch) => {
   dispatch(CheckStart());
-  await axios({
+  axios({
     url: 'https://localhost:5001/api/users/auth/GetUserRole',
     method: 'GET',
     timeout: 10000,
@@ -154,7 +162,7 @@ export const checkUser = () => async (dispatch) => {
       const { status } = error.request;
       if (status === 0) dispatch(CheckFailure('Ошибка подключения к серверу'));
       if (status === 401) dispatch(CheckFailure(''));
-      else dispatch(CheckFailure(error.request.response));
+      if (status !== 0 && status !== 401) dispatch(CheckFailure(error.request.response));
     });
 };
 

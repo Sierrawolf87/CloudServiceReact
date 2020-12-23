@@ -18,7 +18,6 @@ export const UserListSlice = createSlice({
     },
     error: '',
     loading: true,
-    test: 0,
   },
   reducers: {
     GetUserListSuccessful: (state, action) => {

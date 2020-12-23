@@ -9,7 +9,7 @@ import './CSCard.css';
 
 export function CSCard(props) {
   return (
-    <Card className="CSCatdRoot" key={props.key}>
+    <Card className="CSCatdRoot" key>
       <CardContent>
         <Typography className="CSCardTitle" color="textSecondary" gutterBottom>
           {props.header}

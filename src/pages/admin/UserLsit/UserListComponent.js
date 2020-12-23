@@ -6,6 +6,7 @@ import Axios from 'axios';
 import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import CSAlert from '../../../modules/Alerts/CSAlert';
 import { CSCard, CSCardSkeleton } from '../../../modules/components/CSCard/CSCard';
 import { checkUser } from '../../Auth/AuthSlice';
 
@@ -15,66 +16,7 @@ import { getUserList } from './UserListSlice';
 class UserListComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      alert: {
-        open: false,
-      },
-    };
     this.props.getUserList();
-  }
-
-  /* getUser() {
-    // checkUser();
-    Axios({
-      url: 'https://localhost:5001/api/users',
-      method: 'GET',
-      timeout: 1000,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
-      },
-    })
-      .then((res) => {
-        this.setState({
-          list: res.data,
-          loading: false,
-        });
-      })
-      .catch((error) => {
-        const { status } = error.request;
-        let currentError;
-        if (status === 0) currentError = 'Ошибка подключения к серверу';
-        if (status === 401) this.props.history.push(`/auth?redirectUrl=${window.location.href}`);
-        if (status >= 400 && status < 500) currentError = error.request.response;
-        this.setState({
-          error: currentError,
-          alert: {
-            open: true,
-          },
-          loading: true,
-        });
-      });
-  } */
-
-  renderAlertError() {
-    const handleClose = (event, reason) => {
-      if (reason === 'clickaway') {
-        return;
-      }
-
-      this.setState({
-        alert: {
-          open: false,
-        },
-      });
-    };
-
-    return (
-      <Snackbar open={this.state.alert.open} autoHideDuration={6000} onClose={handleClose}>
-        <Alert onClose={handleClose} severity="error">
-          {this.props.userList.error}
-        </Alert>
-      </Snackbar>
-    );
   }
 
   render() {
@@ -122,7 +64,7 @@ class UserListComponent extends React.Component {
         <CSCardSkeleton />
         <CSCardSkeleton />
         <CSCardSkeleton />
-        {this.renderAlertError()}
+        <CSAlert text={this.props.userList.error} variant="error" />
       </Box>
     );
   }
@@ -133,7 +75,6 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = () => (dispatch) => ({
-  checkUser: () => dispatch(checkUser()),
   getUserList: () => dispatch(getUserList()),
 });
 

@@ -1,13 +1,14 @@
-.root {
+.AppBarRoot {
   -webkit-box-flex: 1;
       -ms-flex-positive: 1;
           flex-grow: 1;
 }
 
-.title {
+.AppBarTitle {
   -webkit-box-flex: 1;
       -ms-flex-positive: 1;
           flex-grow: 1;
+  cursor: pointer;
 }
 
 .list {

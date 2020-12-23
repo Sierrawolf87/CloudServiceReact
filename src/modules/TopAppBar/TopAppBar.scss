@@ -1,8 +1,9 @@
-.root{
+.AppBarRoot{
     flex-grow: 1;
 }
-.title{
+.AppBarTitle{
     flex-grow: 1;
+    cursor: pointer;
 }
 
 .list{

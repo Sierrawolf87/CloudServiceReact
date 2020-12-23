@@ -5,7 +5,7 @@ import {
   ListItemText, MenuItem, Toolbar, Typography, Menu as UserMenu, Fade,
 } from '@material-ui/core';
 import './TopAppBar.css';
-import { withRouter } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { checkUser, signOut } from '../../pages/Auth/AuthSlice';
 
@@ -16,11 +16,12 @@ class TopAppBar extends React.Component {
       drawerOpen: false,
       accountMenuOpen: false,
       anchorEl: null,
+      redirect: false,
     };
     this.props.checkUser();
   }
 
-  buuronOrMenu() {
+  buttonOrMenu() {
     const handleMenu = (event) => {
       this.setState({
         accountMenuOpen: true,
@@ -71,8 +72,17 @@ class TopAppBar extends React.Component {
       );
     }
     return (
-      <Button color="inherit" onClick={() => this.props.history.push(`/auth?redirectUrl=${window.location.href}`)}>Войти</Button>
+      <Button color="inherit" onClick={() => window.location.assign(`/auth?redirectUrl=${window.location.href}`)}>Войти</Button>
     );
+  }
+
+  redirect() {
+    if (this.state.redirect) {
+      return (
+        <Redirect to={`/auth?redirectUrl=${window.location.href}`} />
+      );
+    }
+    return (<div />);
   }
 
   render() {
@@ -101,16 +111,17 @@ class TopAppBar extends React.Component {
     );
 
     return (
-      <div className="root">
+      <div className="AppBarRoot">
+        {this.redirect()}
         <AppBar position="static">
           <Toolbar>
-            <IconButton edge="start" className="menuButton" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
+            <IconButton edge="start" className="AppBarMenuButton" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
               <Menu />
             </IconButton>
-            <Typography variant="h6" className="title">
+            <Typography variant="h6" className="AppBarTitle" onClick={() => window.location.assign('/')}>
               Cloud Service
             </Typography>
-            {this.buuronOrMenu()}
+            {this.buttonOrMenu()}
           </Toolbar>
         </AppBar>
         <>
@@ -132,7 +143,7 @@ const mapDispatchToProps = () => (dispatch) => ({
   signOut: () => dispatch(signOut()),
 });
 
-export default withRouter(connect(
+export default connect(
   mapStateToProps,
   mapDispatchToProps,
-)(TopAppBar));
+)(TopAppBar);
