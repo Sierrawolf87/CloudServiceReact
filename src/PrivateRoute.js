@@ -3,16 +3,13 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
 import store from './app/store';
+import CSBackdrop from './modules/Backdrop/CSBackdrop';
 // import CSAlertRender from './modules/Alerts/AlertError';
 import { checkUser } from './pages/Auth/AuthSlice';
 
 store.dispatch(checkUser());
 
 const PrivateRouteComponent = ({ component: Component, userRole, ...rest }) => {
-  debugger;
-  /*   if (rest.auth.check === true && rest.auth.error !== '') {
-    return (CSAlertRender(rest.auth.error));
-  } */
   if (rest.auth.check === true) {
     if (rest.auth.userData.isAuthorized === true && rest.auth.userData.role === userRole) {
       return (
@@ -34,7 +31,7 @@ const PrivateRouteComponent = ({ component: Component, userRole, ...rest }) => {
     );
   }
   return (
-    <div />
+    <CSBackdrop />
   );
 };
 

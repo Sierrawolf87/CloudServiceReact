@@ -1,25 +1,39 @@
-/* eslint-disable no-unused-vars */
-import { Box, Snackbar } from '@material-ui/core';
+import { Box, withStyles } from '@material-ui/core';
 import { Delete, Edit } from '@material-ui/icons';
-import { Alert, Skeleton } from '@material-ui/lab';
-import Axios from 'axios';
 import React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import CSAlert from '../../../modules/Alerts/CSAlert';
 import { CSCard, CSCardSkeleton } from '../../../modules/components/CSCard/CSCard';
-import { checkUser } from '../../Auth/AuthSlice';
-
-import './UserList.css';
 import { getUserList } from './UserListSlice';
+
+const styles = () => ({
+  userList: {
+    width: '100%',
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflowY: 'auto',
+    maxHeight: '85vh',
+  },
+});
 
 class UserListComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.props.getUserList();
+    this.props.getUserList(this.props.userList.nextPage);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  windowScroll(e) {
+    if ((e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight)) {
+      console.log(this.props.userList.nextPage);
+      this.props.getUserList(this.props.userList.nextPage);
+    }
   }
 
   render() {
+    const { classes } = this.props;
     const buttons = [
       {
         actionOnClick: () => { },
@@ -30,10 +44,9 @@ class UserListComponent extends React.Component {
         icon: <Delete />,
       },
     ];
-    debugger;
     if (this.props.userList.loading === false) {
       return (
-        <Box className="userRoot">
+        <Box className={classes.userList} onScroll={(e) => this.windowScroll(e)}>
           {this.props.userList.userListData.map((item) => (
             <CSCard
               key={item.id}
@@ -55,7 +68,7 @@ class UserListComponent extends React.Component {
       );
     }
     return (
-      <Box className="userRoot">
+      <Box className={classes.userList}>
         <CSCardSkeleton />
         <CSCardSkeleton />
         <CSCardSkeleton />
@@ -75,10 +88,10 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = () => (dispatch) => ({
-  getUserList: () => dispatch(getUserList()),
+  getUserList: (page, size) => dispatch(getUserList(page, size)),
 });
 
-export default withRouter(connect(
+export default withStyles(styles)(connect(
   mapStateToProps,
   mapDispatchToProps,
 )(UserListComponent));

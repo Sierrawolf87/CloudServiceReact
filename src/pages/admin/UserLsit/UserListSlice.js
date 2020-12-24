@@ -4,7 +4,7 @@ import Axios from 'axios';
 export const UserListSlice = createSlice({
   name: 'userList',
   initialState: {
-    userListData: {
+    userListData: [{
       id: '',
       name: '',
       surname: '',
@@ -15,17 +15,19 @@ export const UserListSlice = createSlice({
         id: '',
         name: '',
       },
-    },
+    }],
+    nextPage: 1,
     error: '',
     loading: true,
   },
   reducers: {
     GetUserListSuccessful: (state, action) => {
-      state.userListData = action.payload;
+      state.userListData = state.userListData.concat(action.payload.data);
+      state.nextPage = JSON.parse(action.payload.headers['x-pagination']).Next;
       state.loading = false;
     },
     GetUserListFailure: (state, action) => {
-      state.userListData = {};
+      state.userListData = [];
       state.error = action.payload;
       state.loading = true;
     },
@@ -34,9 +36,13 @@ export const UserListSlice = createSlice({
 
 export const { GetUserListSuccessful, GetUserListFailure } = UserListSlice.actions;
 
-export const getUserList = () => (dispatch) => {
+export const getUserList = (page = 1, size = 1) => (dispatch) => {
   Axios({
-    url: 'https://localhost:5001/api/users',
+    url: 'https://localhost:5001/api/users/withpage',
+    params: {
+      page,
+      size,
+    },
     method: 'GET',
     timeout: 1000,
     headers: {
@@ -44,7 +50,7 @@ export const getUserList = () => (dispatch) => {
     },
   })
     .then((res) => {
-      dispatch(GetUserListSuccessful(res.data));
+      dispatch(GetUserListSuccessful({ data: res.data, headers: res.headers }));
     })
     .catch((error) => {
       const { status } = error.request;

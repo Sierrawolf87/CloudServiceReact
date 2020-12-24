@@ -2,12 +2,27 @@ import React from 'react';
 import { AccountCircle, Mail, Menu } from '@material-ui/icons';
 import {
   AppBar, Button, Divider, Drawer, IconButton, List, ListItem, ListItemIcon,
-  ListItemText, MenuItem, Toolbar, Typography, Menu as UserMenu, Fade,
+  ListItemText, MenuItem, Toolbar, Typography, Menu as UserMenu, Fade, withStyles,
 } from '@material-ui/core';
 import './TopAppBar.css';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { checkUser, signOut } from '../../pages/Auth/AuthSlice';
+import { RoleRoot, RoleStudent, RoleTeacher } from '../../pages/Auth/RoleList';
+
+const style = (theme) => ({
+  root: {
+    flexGrow: 1,
+    zIndex: theme.zIndex.appBar,
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  title: {
+    flexGrow: 1,
+    cursor: 'pointer',
+  },
+});
 
 class TopAppBar extends React.Component {
   constructor(props) {
@@ -85,7 +100,7 @@ class TopAppBar extends React.Component {
     return (<div />);
   }
 
-  render() {
+  list() {
     const toggleDrawer = (open) => (event) => {
       if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
         return;
@@ -93,7 +108,63 @@ class TopAppBar extends React.Component {
       this.setState({ drawerOpen: open });
     };
 
-    const list = () => (
+    if (this.props.auth.userData.isAuthorized === true) {
+      if (this.props.auth.userData.role === RoleRoot) {
+        return (
+          <div
+            className="list"
+            role="presentation"
+            onClick={toggleDrawer(false)}
+            onKeyDown={toggleDrawer(false)}
+          >
+            <List>
+              <ListItem button>
+                <ListItemIcon><Mail /></ListItemIcon>
+                <ListItemText primary="Тест для root" />
+              </ListItem>
+            </List>
+            <Divider />
+          </div>
+        );
+      }
+      if (this.props.auth.userData.role === RoleTeacher) {
+        return (
+          <div
+            className="list"
+            role="presentation"
+            onClick={toggleDrawer(false)}
+            onKeyDown={toggleDrawer(false)}
+          >
+            <List>
+              <ListItem button>
+                <ListItemIcon><Mail /></ListItemIcon>
+                <ListItemText primary="Тест для teacher" />
+              </ListItem>
+            </List>
+            <Divider />
+          </div>
+        );
+      }
+      if (this.props.auth.userData.role === RoleStudent) {
+        return (
+          <div
+            className="list"
+            role="presentation"
+            onClick={toggleDrawer(false)}
+            onKeyDown={toggleDrawer(false)}
+          >
+            <List>
+              <ListItem button>
+                <ListItemIcon><Mail /></ListItemIcon>
+                <ListItemText primary="Тест для student" />
+              </ListItem>
+            </List>
+            <Divider />
+          </div>
+        );
+      }
+    }
+    return (
       <div
         className="list"
         role="presentation"
@@ -109,16 +180,25 @@ class TopAppBar extends React.Component {
         <Divider />
       </div>
     );
+  }
 
+  render() {
+    const { classes } = this.props;
+    const toggleDrawer = (open) => (event) => {
+      if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+        return;
+      }
+      this.setState({ drawerOpen: open });
+    };
     return (
-      <div className="AppBarRoot">
+      <div className={classes.root}>
         {this.redirect()}
         <AppBar position="static">
           <Toolbar>
-            <IconButton edge="start" className="AppBarMenuButton" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
+            <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
               <Menu />
             </IconButton>
-            <Typography variant="h6" className="AppBarTitle" onClick={() => window.location.assign('/')}>
+            <Typography variant="h6" className={classes.title} onClick={() => window.location.assign('/')}>
               Cloud Service
             </Typography>
             {this.buttonOrMenu()}
@@ -126,7 +206,7 @@ class TopAppBar extends React.Component {
         </AppBar>
         <>
           <Drawer open={this.state.drawerOpen} onClose={toggleDrawer(false)}>
-            {list()}
+            {this.list()}
           </Drawer>
         </>
       </div>
@@ -143,7 +223,7 @@ const mapDispatchToProps = () => (dispatch) => ({
   signOut: () => dispatch(signOut()),
 });
 
-export default connect(
+export default withStyles(style)(connect(
   mapStateToProps,
   mapDispatchToProps,
-)(TopAppBar);
+)(TopAppBar));
