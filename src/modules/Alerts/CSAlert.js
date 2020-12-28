@@ -1,8 +1,12 @@
 import React from 'react';
-import { Snackbar } from '@material-ui/core';
+import { Snackbar, withStyles } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import './CSAlert.css';
 
+const styles = () => ({
+  csAlert: {
+    maxWidth: '80vw',
+  },
+});
 class CSAlert extends React.Component {
   constructor(props) {
     super(props);
@@ -23,6 +27,7 @@ class CSAlert extends React.Component {
   }
 
   render() {
+    const { classes } = this.props;
     const handleClose = (event, reason) => {
       if (reason === 'clickaway') {
         return;
@@ -33,7 +38,12 @@ class CSAlert extends React.Component {
     };
 
     return (
-      <Snackbar className="CSAlert" open={(Boolean)(this.state.alertOpen && this.props.text)} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar
+        className={classes.csAlert}
+        open={(Boolean)(this.state.alertOpen && this.props.text)}
+        autoHideDuration={6000}
+        onClose={handleClose}
+      >
         <Alert severity={this.props.variant} onClose={handleClose}>
           {this.props.text}
         </Alert>
@@ -42,4 +52,4 @@ class CSAlert extends React.Component {
   }
 }
 
-export default CSAlert;
+export default withStyles(styles)(CSAlert);

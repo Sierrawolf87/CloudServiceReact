@@ -14,7 +14,7 @@ const styles = () => ({
     justifyContent: 'center',
     alignItems: 'center',
     overflowY: 'auto',
-    maxHeight: '85vh',
+    maxHeight: 'calc(100vh - 64px)',
   },
 });
 
@@ -26,8 +26,8 @@ class UserListComponent extends React.Component {
 
   // eslint-disable-next-line class-methods-use-this
   windowScroll(e) {
-    if ((e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight)) {
-      console.log(this.props.userList.nextPage);
+    if ((e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight)
+        && this.props.userList.nextPage !== null) {
       this.props.getUserList(this.props.userList.nextPage);
     }
   }

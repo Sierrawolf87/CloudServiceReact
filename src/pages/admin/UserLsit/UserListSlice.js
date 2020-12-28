@@ -4,18 +4,7 @@ import Axios from 'axios';
 export const UserListSlice = createSlice({
   name: 'userList',
   initialState: {
-    userListData: [{
-      id: '',
-      name: '',
-      surname: '',
-      patronymic: '',
-      initials: '',
-      email: '',
-      role: {
-        id: '',
-        name: '',
-      },
-    }],
+    userListData: [],
     nextPage: 1,
     error: '',
     loading: true,
@@ -36,7 +25,7 @@ export const UserListSlice = createSlice({
 
 export const { GetUserListSuccessful, GetUserListFailure } = UserListSlice.actions;
 
-export const getUserList = (page = 1, size = 1) => (dispatch) => {
+export const getUserList = (page, size) => (dispatch) => {
   Axios({
     url: 'https://localhost:5001/api/users/withpage',
     params: {
@@ -50,7 +39,9 @@ export const getUserList = (page = 1, size = 1) => (dispatch) => {
     },
   })
     .then((res) => {
-      dispatch(GetUserListSuccessful({ data: res.data, headers: res.headers }));
+      if (res.status !== 204) {
+        dispatch(GetUserListSuccessful({ data: res.data, headers: res.headers }));
+      }
     })
     .catch((error) => {
       const { status } = error.request;

@@ -4,7 +4,6 @@ import {
   AppBar, Button, Divider, Drawer, IconButton, List, ListItem, ListItemIcon,
   ListItemText, MenuItem, Toolbar, Typography, Menu as UserMenu, Fade, withStyles,
 } from '@material-ui/core';
-import './TopAppBar.css';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { checkUser, signOut } from '../../pages/Auth/AuthSlice';
@@ -21,6 +20,9 @@ const style = (theme) => ({
   title: {
     flexGrow: 1,
     cursor: 'pointer',
+  },
+  list: {
+    width: '200px',
   },
 });
 
@@ -101,6 +103,7 @@ class TopAppBar extends React.Component {
   }
 
   list() {
+    const { classes } = this.props;
     const toggleDrawer = (open) => (event) => {
       if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
         return;
@@ -112,7 +115,7 @@ class TopAppBar extends React.Component {
       if (this.props.auth.userData.role === RoleRoot) {
         return (
           <div
-            className="list"
+            className={classes.list}
             role="presentation"
             onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
@@ -130,7 +133,7 @@ class TopAppBar extends React.Component {
       if (this.props.auth.userData.role === RoleTeacher) {
         return (
           <div
-            className="list"
+            className={classes.list}
             role="presentation"
             onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
@@ -148,7 +151,7 @@ class TopAppBar extends React.Component {
       if (this.props.auth.userData.role === RoleStudent) {
         return (
           <div
-            className="list"
+            className={classes.list}
             role="presentation"
             onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
@@ -166,7 +169,7 @@ class TopAppBar extends React.Component {
     }
     return (
       <div
-        className="list"
+        className={classes.list}
         role="presentation"
         onClick={toggleDrawer(false)}
         onKeyDown={toggleDrawer(false)}
@@ -204,11 +207,11 @@ class TopAppBar extends React.Component {
             {this.buttonOrMenu()}
           </Toolbar>
         </AppBar>
-        <>
-          <Drawer open={this.state.drawerOpen} onClose={toggleDrawer(false)}>
-            {this.list()}
-          </Drawer>
-        </>
+
+        <Drawer open={this.state.drawerOpen} onClose={toggleDrawer(false)}>
+          {this.list()}
+        </Drawer>
+
       </div>
     );
   }

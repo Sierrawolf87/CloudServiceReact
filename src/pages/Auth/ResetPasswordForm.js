@@ -1,12 +1,46 @@
 import {
-  Box, Button, Slide, TextField, Typography,
+  Box, Button, TextField, Typography, withStyles,
 } from '@material-ui/core';
-import Alert from '@material-ui/lab/Alert';
 import React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { ResetPassword, clearError, clearSuccess } from './AuthSlice';
-import './AuthForms.css';
+import { ResetPassword } from './AuthSlice';
+import CSAlert from '../../modules/Alerts/CSAlert';
+
+const styles = () => ({
+  main: {
+    width: '100%',
+    height: 'calc(100vh - 64px)',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  signInForm: {
+    display: 'flex',
+    justifyContent: 'space-evenly',
+    flexDirection: 'column',
+    width: '300px',
+    height: '350px',
+    padding: '25px',
+    boxShadow: '0px 0px 15px 0px rgba(34, 60, 80, 0.2)',
+    borderRadius: '8px',
+  },
+  ButtonDivForgot: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  logo: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+  },
+  logoImg: {
+    width: '50px',
+    height: '50px',
+  },
+});
 
 class ResetPasswordForm extends React.Component {
   constructor(props) {
@@ -23,60 +57,27 @@ class ResetPasswordForm extends React.Component {
     });
   }
 
-  renderErrorAlert() {
-    const open = this.props.auth.error === '';
-    if (!open) {
-      setTimeout(() => this.props.clearError(), 5000);
-    }
-    return (
-      <Slide className="alert" direction="up" in={!open} mountOnEnter unmountOnExit>
-        <Alert severity="error">{this.props.auth.error}</Alert>
-      </Slide>
-    );
-  }
-
-  renderSuccessAlert() {
-    const open = this.props.auth.success === '';
-    if (!open) {
-      setTimeout(() => this.props.clearSuccess(), 5000);
-    }
-    return (
-      <Slide className="alert" direction="up" in={!open} mountOnEnter unmountOnExit>
-        <Alert
-          severity="success"
-          action={(
-            <Button color="inherit" size="small" onClick={() => this.props.history.push('/auth')}>
-              Вход
-            </Button>
-                      )}
-        >
-          {this.props.auth.success}
-        </Alert>
-      </Slide>
-    );
-  }
-
   render() {
+    const { classes } = this.props;
     const redirect = new URLSearchParams(this.props.location.search).get('redirectUrl');
     if (this.props.auth.userData.isAuthorized && redirect !== '') {
       window.location.replace(redirect);
     }
     return (
-      <Box className="main">
-        <Box className="signInForm" boxShadow={2}>
-          <Box className="logo">
-            <img src="../../logo105.png" alt="Logo" />
+      <Box className={classes.main}>
+        <Box className={classes.signInForm} boxShadow={2}>
+          <Box className={classes.logo}>
+            <img src="../../logo105.png" alt="Logo" className={classes.logoImg} />
             <Typography variant="h5">Cloud Service</Typography>
             <Typography variant="subtitle1">Введите новый пароль</Typography>
           </Box>
           <TextField id="authnewPassword" type="password" label="Новый пароль" variant="outlined" name="newPassword" onChange={(event) => this.OnChangeInputs(event)} value={this.state.newPassword} />
           <TextField id="authconfimPassword" type="password" label="Повторите пароль" variant="outlined" name="confimPassword" onChange={(event) => this.OnChangeInputs(event)} value={this.state.confimPassword} />
-          <Box className="ButtonDivForgot">
+          <Box className={classes.ButtonDivForgot}>
             <Button variant="contained" color="primary" onClick={() => this.props.ResetPassword(this.props.match.params.code, this.state.newPassword, this.state.confimPassword)}> Восстановить </Button>
           </Box>
         </Box>
-        {this.renderErrorAlert()}
-        {this.renderSuccessAlert()}
+        <CSAlert text={this.props.auth.error} variant="error" />
       </Box>
     );
   }
@@ -89,11 +90,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = () => (dispatch) => ({
   // eslint-disable-next-line max-len
   ResetPassword: (code, newPassword, confimPassword) => dispatch(ResetPassword(code, newPassword, confimPassword)),
-  clearError: () => dispatch(clearError()),
-  clearSuccess: () => dispatch(clearSuccess()),
 });
 
-export default withRouter(connect(
+export default withStyles(styles)(connect(
   mapStateToProps,
   mapDispatchToProps,
 )(ResetPasswordForm));

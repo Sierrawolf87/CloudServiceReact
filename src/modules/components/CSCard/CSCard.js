@@ -3,21 +3,36 @@ import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
-import { Box, IconButton } from '@material-ui/core';
+import { Box, IconButton, makeStyles } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import './CSCard.css';
+
+const useStyles = makeStyles({
+  root: {
+    width: '300px',
+    height: '330px',
+    margin: '16px',
+    whiteSpace: 'pre-wrap',
+  },
+  title: {
+    fontSize: '14px',
+  },
+  pos: {
+    marginBottom: '12px',
+  },
+});
 
 export function CSCard(props) {
+  const classes = useStyles();
   return (
-    <Card className="CSCatdRoot" key>
+    <Card className={classes.root} key>
       <CardContent>
-        <Typography className="CSCardTitle" color="textSecondary" gutterBottom>
+        <Typography className={classes.title} color="textSecondary" gutterBottom>
           {props.header}
         </Typography>
         <Typography variant="h5" component="h2">
           {props.title}
         </Typography>
-        <Typography className="CSCardPos" color="textSecondary">
+        <Typography className={classes.pos} color="textSecondary">
           {props.signature}
         </Typography>
         <Typography variant="body2" component="p">
@@ -36,16 +51,17 @@ export function CSCard(props) {
 }
 
 export function CSCardSkeleton() {
+  const classes = useStyles();
   return (
-    <Box className="CSCatdRoot">
+    <Box className={classes.root}>
       <div>
-        <Typography className="CSCardTitle" color="textSecondary" gutterBottom>
+        <Typography className={classes.title} color="textSecondary" gutterBottom>
           <Skeleton variant="text" animation="wave" />
         </Typography>
         <Typography variant="h5" component="h2">
           <Skeleton variant="text" animation="wave" />
         </Typography>
-        <Typography className="CSCardPos" color="textSecondary">
+        <Typography className={classes.pos} color="textSecondary">
           <Skeleton variant="text" animation="wave" />
         </Typography>
         <Typography variant="body2" component="p">
