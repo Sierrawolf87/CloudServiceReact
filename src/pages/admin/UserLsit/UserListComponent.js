@@ -14,7 +14,7 @@ const styles = () => ({
     justifyContent: 'center',
     alignItems: 'center',
     overflowY: 'auto',
-    maxHeight: 'calc(100vh - 64px)',
+    maxHeight: 'calc(100vh - 64px - 60px)',
   },
 });
 

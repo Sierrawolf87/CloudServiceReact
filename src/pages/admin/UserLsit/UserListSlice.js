@@ -5,6 +5,8 @@ export const UserListSlice = createSlice({
   name: 'userList',
   initialState: {
     userListData: [],
+    userRoleData: [],
+    userGroupData: [],
     nextPage: 1,
     error: '',
     loading: true,
@@ -20,10 +22,27 @@ export const UserListSlice = createSlice({
       state.error = action.payload;
       state.loading = true;
     },
+    GetRoleListSuccessful: (state, action) => {
+      state.userRoleData = action.payload;
+    },
+    GetRoleListFailure: (state, action) => {
+      state.userRoleData = [];
+      state.error = action.payload;
+    },
+    GetGroupListSuccessful: (state, action) => {
+      state.userGroupData = action.payload;
+    },
+    GetGroupListFailure: (state, action) => {
+      state.userGroupData = [];
+      state.error = action.payload;
+    },
   },
 });
 
-export const { GetUserListSuccessful, GetUserListFailure } = UserListSlice.actions;
+export const {
+  GetUserListSuccessful, GetUserListFailure, GetRoleListSuccessful, GetRoleListFailure,
+  GetGroupListSuccessful, GetGroupListFailure,
+} = UserListSlice.actions;
 
 export const getUserList = (page, size) => (dispatch) => {
   Axios({
@@ -47,7 +66,51 @@ export const getUserList = (page, size) => (dispatch) => {
       const { status } = error.request;
       let currentError;
       if (status === 0) currentError = 'Ошибка подключения к серверу';
-      if (status === 401) this.props.history.push(`/auth?redirectUrl=${window.location.href}`);
+      if (status === 401) window.location.assign(`/auth?redirectUrl=${window.location.href}`);
+      if (status >= 400 && status < 500) currentError = error.request.response;
+      dispatch(GetUserListFailure(currentError));
+    });
+};
+
+export const getRoleList = () => (dispatch) => {
+  Axios({
+    url: 'https://localhost:5001/api/roles',
+    method: 'GET',
+    timeout: 1000,
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
+    },
+  })
+    .then((res) => {
+      dispatch(GetRoleListSuccessful(res.data));
+    })
+    .catch((error) => {
+      const { status } = error.request;
+      let currentError;
+      if (status === 0) currentError = 'Ошибка подключения к серверу';
+      if (status === 401) window.location.assign(`/auth?redirectUrl=${window.location.href}`);
+      if (status >= 400 && status < 500) currentError = error.request.response;
+      dispatch(GetUserListFailure(currentError));
+    });
+};
+
+export const getGroupList = () => (dispatch) => {
+  Axios({
+    url: 'https://localhost:5001/api/groups',
+    method: 'GET',
+    timeout: 1000,
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
+    },
+  })
+    .then((res) => {
+      dispatch(GetGroupListSuccessful(res.data));
+    })
+    .catch((error) => {
+      const { status } = error.request;
+      let currentError;
+      if (status === 0) currentError = 'Ошибка подключения к серверу';
+      if (status === 401) window.location.assign(`/auth?redirectUrl=${window.location.href}`);
       if (status >= 400 && status < 500) currentError = error.request.response;
       dispatch(GetUserListFailure(currentError));
     });
