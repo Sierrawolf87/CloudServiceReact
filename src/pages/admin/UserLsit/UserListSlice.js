@@ -8,6 +8,7 @@ export const UserListSlice = createSlice({
     userRoleData: [],
     userGroupData: [],
     nextPage: 1,
+    nextSearchPage: 1,
     error: '',
     loading: true,
   },
@@ -18,6 +19,16 @@ export const UserListSlice = createSlice({
       state.loading = false;
     },
     GetUserListFailure: (state, action) => {
+      state.userListData = [];
+      state.error = action.payload;
+      state.loading = true;
+    },
+    SearchSuccessful: (state, action) => {
+      state.userListData = action.payload.data;
+      // state.nextSearchPage = JSON.parse(action.payload.headers['x-pagination']).Next;
+      state.loading = false;
+    },
+    SearchFailure: (state, action) => {
       state.userListData = [];
       state.error = action.payload;
       state.loading = true;
@@ -41,7 +52,7 @@ export const UserListSlice = createSlice({
 
 export const {
   GetUserListSuccessful, GetUserListFailure, GetRoleListSuccessful, GetRoleListFailure,
-  GetGroupListSuccessful, GetGroupListFailure,
+  GetGroupListSuccessful, GetGroupListFailure, SearchSuccessful, SearchFailure,
 } = UserListSlice.actions;
 
 export const getUserList = (page, size) => (dispatch) => {
@@ -72,6 +83,35 @@ export const getUserList = (page, size) => (dispatch) => {
     });
 };
 
+export const getSearchList = (text, role, group) => (dispatch) => {
+  Axios({
+    url: 'https://localhost:5001/api/users/search',
+    params: {
+      text,
+      role,
+      group,
+    },
+    method: 'GET',
+    timeout: 1000,
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
+    },
+  })
+    .then((res) => {
+      if (res.status !== 204) {
+        dispatch(SearchSuccessful({ data: res.data, headers: res.headers }));
+      }
+    })
+    .catch((error) => {
+      const { status } = error.request;
+      let currentError;
+      if (status === 0) currentError = 'Ошибка подключения к серверу';
+      if (status === 401) window.location.assign(`/auth?redirectUrl=${window.location.href}`);
+      if (status >= 400 && status < 500) currentError = error.request.response;
+      dispatch(SearchFailure(currentError));
+    });
+};
+
 export const getRoleList = () => (dispatch) => {
   Axios({
     url: 'https://localhost:5001/api/roles',
@@ -82,6 +122,7 @@ export const getRoleList = () => (dispatch) => {
     },
   })
     .then((res) => {
+      res.data.unshift({ id: '', name: 'Все' });
       dispatch(GetRoleListSuccessful(res.data));
     })
     .catch((error) => {
@@ -104,6 +145,7 @@ export const getGroupList = () => (dispatch) => {
     },
   })
     .then((res) => {
+      res.data.unshift({ id: '', name: 'Все' });
       dispatch(GetGroupListSuccessful(res.data));
     })
     .catch((error) => {

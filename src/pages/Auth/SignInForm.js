@@ -59,7 +59,6 @@ class SignInForm extends React.Component {
 
   render() {
     const { classes } = this.props;
-    console.log(classes);
     const redirect = new URLSearchParams(this.props.location.search).get('redirectUrl');
     if (this.props.auth.userData.isAuthorized && redirect !== '' && redirect !== null) {
       window.location.replace(redirect);

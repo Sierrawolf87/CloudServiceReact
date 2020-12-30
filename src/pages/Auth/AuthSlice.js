@@ -159,6 +159,7 @@ export const checkUser = () => (dispatch) => {
       dispatch(CheckSuccessful(data));
     })
     .catch((error) => {
+      console.log(error);
       const { status } = error.request;
       if (status === 0) dispatch(CheckFailure('Ошибка подключения к серверу'));
       if (status === 401) dispatch(CheckFailure(''));

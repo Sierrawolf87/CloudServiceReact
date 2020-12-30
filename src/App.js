@@ -9,6 +9,11 @@ import UserList from './pages/admin/UserLsit/UserList';
 import PrivateRoute from './PrivateRoute';
 import TopAppBar from './modules/TopAppBar/TopAppBar';
 
+/* Axios.defaults.baseURL = 'https://localhost:5001/api/';
+Axios.defaults.headers = {
+  Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
+};
+ */
 function App() {
   return (
     <div>

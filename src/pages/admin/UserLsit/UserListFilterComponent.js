@@ -1,9 +1,11 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import {
-  Box, FormControl, InputLabel, MenuItem, Select, TextField, withStyles,
+  Box, TextField, withStyles,
 } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
 import React from 'react';
 import { connect } from 'react-redux';
-import { getRoleList, getGroupList } from './UserListSlice';
+import { getRoleList, getGroupList, getSearchList } from './UserListSlice';
 
 const style = () => ({
   root: {
@@ -34,25 +36,23 @@ class UserListFilterComponent extends React.Component {
 
   roleSelect() {
     const { classes } = this.props;
+    const { userRoleData } = this.props.userList;
     if (this.props.userList.userRoleData) {
       return (
-        <FormControl>
-          <InputLabel id="userListFilterRoleSelectLabel">Роль</InputLabel>
-          <Select
-            className={classes.roleSelect}
-            labelId="userListFilterRoleSelectLabel"
-            id="roleFilter"
-            name="role"
-            value={this.state.role}
-            onChange={(event) => this.OnChangeInputs(event)}
-          >
-            <MenuItem selected value="all">Все</MenuItem>
-            {this.props.userList.userRoleData.map((item) => (
-              <MenuItem value={item.id}>{item.name}</MenuItem>
-            ))}
-
-          </Select>
-        </FormControl>
+        <Autocomplete
+          className={classes.roleSelect}
+          id="roleFilter"
+          autoHighlight
+          options={userRoleData}
+          getOptionLabel={(option) => option.name}
+          renderInput={(params) => <TextField {...params} label="Роль" />}
+          onChange={(event, option) => {
+            if (option) {
+              this.setState({ role: option.id });
+              this.props.getSearchList(this.state.search, this.state.role, this.state.group);
+            }
+          }}
+        />
       );
     }
     return (
@@ -63,24 +63,22 @@ class UserListFilterComponent extends React.Component {
   groupSelect() {
     const { classes } = this.props;
     if (this.props.userList.userGroupData) {
+      const { userGroupData } = this.props.userList;
       return (
-        <FormControl>
-          <InputLabel id="userListFilterGroupSelectLabel">Группа</InputLabel>
-          <Select
-            className={classes.roleSelect}
-            labelId="userListFilterGroupSelectLabel"
-            id="GroupFilter"
-            name="group"
-            value={this.state.group}
-            onChange={(event) => this.OnChangeInputs(event)}
-          >
-            <MenuItem selected value="all">Все</MenuItem>
-            {this.props.userList.userGroupData.map((item) => (
-              <MenuItem value={item.id}>{item.name}</MenuItem>
-            ))}
-
-          </Select>
-        </FormControl>
+        <Autocomplete
+          className={classes.roleSelect}
+          id="groupFilter"
+          autoHighlight
+          options={userGroupData}
+          getOptionLabel={(option) => option.name}
+          renderInput={(params) => <TextField {...params} label="Группа" />}
+          onChange={(event, option) => {
+            if (option) {
+              this.setState({ group: option.id });
+              this.props.getSearchList(this.state.search, this.state.role, this.state.group);
+            }
+          }}
+        />
       );
     }
     return (
@@ -92,14 +90,16 @@ class UserListFilterComponent extends React.Component {
     this.setState({
       [e.target.name]: e.target.value,
     });
+    this.props.getSearchList(this.state.search, this.state.role, this.state.group);
   }
 
   render() {
+    console.log(this.state);
     const { classes } = this.props;
     return (
       <Box className={classes.root}>
-        <TextField id="search" label="Поиск" variant="outlined" name="search" autoComplete="off" onChange={(event) => this.OnChangeInputs(event)} value={this.state.search} />
         {this.roleSelect()}
+        <TextField id="search" label="Поиск" variant="outlined" name="search" autoComplete="off" onChange={(event) => this.OnChangeInputs(event)} value={this.state.search} />
         {this.groupSelect()}
       </Box>
     );
@@ -112,6 +112,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = () => (dispatch) => ({
   getRoleList: () => dispatch(getRoleList()),
   getGroupList: () => dispatch(getGroupList()),
+  getSearchList: (text, role, group) => dispatch(getSearchList(text, role, group)),
 });
 
 export default withStyles(style)(connect(
