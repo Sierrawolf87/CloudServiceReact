@@ -23,15 +23,8 @@ export const UserListSlice = createSlice({
       state.error = action.payload;
       state.loading = true;
     },
-    SearchSuccessful: (state, action) => {
-      state.userListData = action.payload.data;
-      // state.nextSearchPage = JSON.parse(action.payload.headers['x-pagination']).Next;
-      state.loading = false;
-    },
-    SearchFailure: (state, action) => {
+    ClearUserList: (state) => {
       state.userListData = [];
-      state.error = action.payload;
-      state.loading = true;
     },
     GetRoleListSuccessful: (state, action) => {
       state.userRoleData = action.payload;
@@ -51,14 +44,25 @@ export const UserListSlice = createSlice({
 });
 
 export const {
-  GetUserListSuccessful, GetUserListFailure, GetRoleListSuccessful, GetRoleListFailure,
-  GetGroupListSuccessful, GetGroupListFailure, SearchSuccessful, SearchFailure,
+  GetUserListSuccessful, GetUserListFailure, ClearUserList, GetRoleListSuccessful,
+  GetRoleListFailure, GetGroupListSuccessful, GetGroupListFailure,
 } = UserListSlice.actions;
 
-export const getUserList = (page, size) => (dispatch) => {
+let oldText = '';
+let oldRole = '';
+let oldGroup = '';
+
+export const getUserList = (text, role, group, page, size) => (dispatch) => {
+  if ((text !== oldText && text !== null) || (role !== oldRole && role !== null) || (group !== oldGroup && group !== null)) { page = 1; dispatch(ClearUserList()); }
+  oldText = text;
+  oldGroup = group;
+  oldRole = role;
   Axios({
-    url: 'https://localhost:5001/api/users/withpage',
+    url: 'https://10.188.8.29:5001/api/users/withpage',
     params: {
+      text,
+      role,
+      group,
       page,
       size,
     },
@@ -83,38 +87,9 @@ export const getUserList = (page, size) => (dispatch) => {
     });
 };
 
-export const getSearchList = (text, role, group) => (dispatch) => {
-  Axios({
-    url: 'https://localhost:5001/api/users/search',
-    params: {
-      text,
-      role,
-      group,
-    },
-    method: 'GET',
-    timeout: 1000,
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
-    },
-  })
-    .then((res) => {
-      if (res.status !== 204) {
-        dispatch(SearchSuccessful({ data: res.data, headers: res.headers }));
-      }
-    })
-    .catch((error) => {
-      const { status } = error.request;
-      let currentError;
-      if (status === 0) currentError = 'Ошибка подключения к серверу';
-      if (status === 401) window.location.assign(`/auth?redirectUrl=${window.location.href}`);
-      if (status >= 400 && status < 500) currentError = error.request.response;
-      dispatch(SearchFailure(currentError));
-    });
-};
-
 export const getRoleList = () => (dispatch) => {
   Axios({
-    url: 'https://localhost:5001/api/roles',
+    url: 'https://10.188.8.29:5001/api/roles',
     method: 'GET',
     timeout: 1000,
     headers: {
@@ -137,7 +112,7 @@ export const getRoleList = () => (dispatch) => {
 
 export const getGroupList = () => (dispatch) => {
   Axios({
-    url: 'https://localhost:5001/api/groups',
+    url: 'https://10.188.8.29:5001/api/groups',
     method: 'GET',
     timeout: 1000,
     headers: {

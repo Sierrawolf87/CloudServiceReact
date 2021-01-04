@@ -5,7 +5,7 @@ import {
 import { Autocomplete } from '@material-ui/lab';
 import React from 'react';
 import { connect } from 'react-redux';
-import { getRoleList, getGroupList, getSearchList } from './UserListSlice';
+import { getRoleList, getGroupList, getUserList } from './UserListSlice';
 
 const style = () => ({
   root: {
@@ -19,6 +19,11 @@ const style = () => ({
   },
   roleSelect: {
     width: '180px',
+  },
+  '@media (max-width:600px)': {
+    roleSelect: {
+      width: '130px',
+    },
   },
 });
 
@@ -49,7 +54,7 @@ class UserListFilterComponent extends React.Component {
           onChange={(event, option) => {
             if (option) {
               this.setState({ role: option.id });
-              this.props.getSearchList(this.state.search, this.state.role, this.state.group);
+              this.props.getUserList(this.state.search, option.id, this.state.group, this.props.userList.nextPage);
             }
           }}
         />
@@ -75,7 +80,7 @@ class UserListFilterComponent extends React.Component {
           onChange={(event, option) => {
             if (option) {
               this.setState({ group: option.id });
-              this.props.getSearchList(this.state.search, this.state.role, this.state.group);
+              this.props.getUserList(this.state.search, this.state.role, option.id, this.props.userList.nextPage);
             }
           }}
         />
@@ -86,20 +91,19 @@ class UserListFilterComponent extends React.Component {
     );
   }
 
-  OnChangeInputs(e) {
+  OnChangeInputSearch(e) {
     this.setState({
-      [e.target.name]: e.target.value,
+      search: e.target.value,
     });
-    this.props.getSearchList(this.state.search, this.state.role, this.state.group);
+    this.props.getUserList(e.target.value, this.state.role, this.state.group, this.props.userList.nextPage);
   }
 
   render() {
-    console.log(this.state);
     const { classes } = this.props;
     return (
       <Box className={classes.root}>
         {this.roleSelect()}
-        <TextField id="search" label="Поиск" variant="outlined" name="search" autoComplete="off" onChange={(event) => this.OnChangeInputs(event)} value={this.state.search} />
+        <TextField id="search" className={classes.roleSelect} label="Поиск" variant="outlined" name="search" autoComplete="off" onChange={(event) => this.OnChangeInputSearch(event)} value={this.state.search} />
         {this.groupSelect()}
       </Box>
     );
@@ -112,7 +116,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = () => (dispatch) => ({
   getRoleList: () => dispatch(getRoleList()),
   getGroupList: () => dispatch(getGroupList()),
-  getSearchList: (text, role, group) => dispatch(getSearchList(text, role, group)),
+  getUserList: (text, role, group, page, size) => dispatch(getUserList(text, role, group, page, size)),
 });
 
 export default withStyles(style)(connect(

@@ -88,7 +88,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = () => (dispatch) => ({
-  getUserList: (page, size) => dispatch(getUserList(page, size)),
+  getUserList: (page, size) => dispatch(getUserList(null, null, null, page, size)),
 });
 
 export default withStyles(styles)(connect(

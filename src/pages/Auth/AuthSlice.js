@@ -76,7 +76,7 @@ export const signIn = (username, password) => async (dispatch) => {
   formdata.append('username', username);
   formdata.append('password', password);
   await axios({
-    url: 'https://localhost:5001/api/Users/auth/SignIn',
+    url: 'https://10.188.8.29:5001/api/Users/auth/SignIn',
     method: 'POST',
     timeout: 10000,
     data: formdata,
@@ -102,7 +102,7 @@ export const ForgotPassword = (username) => async (dispatch) => {
   const formdata = new FormData();
   formdata.append('username', username);
   await axios({
-    url: 'https://localhost:5001/api/Users/auth/ForgotPassword',
+    url: 'https://10.188.8.29:5001/api/Users/auth/ForgotPassword',
     method: 'POST',
     timeout: 10000,
     data: formdata,
@@ -123,7 +123,7 @@ export const ResetPassword = (code, newPassword, confimPassword) => async (dispa
   formdata.append('NewPassword', newPassword);
   formdata.append('ConfimPassword', confimPassword);
   await axios({
-    url: `https://localhost:5001/api/Users/auth/ResetPassword/${code}`,
+    url: `https://10.188.8.29:5001/api/Users/auth/ResetPassword/${code}`,
     method: 'POST',
     timeout: 10000,
     data: formdata,
@@ -144,7 +144,7 @@ export const clearSuccess = () => (dispatch) => dispatch(ClearAlertSuccess());
 export const checkUser = () => (dispatch) => {
   dispatch(CheckStart());
   axios({
-    url: 'https://localhost:5001/api/users/auth/GetUserRole',
+    url: 'https://10.188.8.29:5001/api/users/auth/GetUserRole',
     method: 'GET',
     timeout: 10000,
     headers: {
@@ -159,7 +159,6 @@ export const checkUser = () => (dispatch) => {
       dispatch(CheckSuccessful(data));
     })
     .catch((error) => {
-      console.log(error);
       const { status } = error.request;
       if (status === 0) dispatch(CheckFailure('Ошибка подключения к серверу'));
       if (status === 401) dispatch(CheckFailure(''));
