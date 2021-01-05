@@ -1,5 +1,7 @@
 import React from 'react';
-import { AccountCircle, Mail, Menu } from '@material-ui/icons';
+import {
+  AccountCircle, Mail, Menu, People,
+} from '@material-ui/icons';
 import {
   AppBar, Button, Divider, Drawer, IconButton, List, ListItem, ListItemIcon,
   ListItemText, MenuItem, Toolbar, Typography, Menu as UserMenu, Fade, withStyles,
@@ -121,9 +123,9 @@ class TopAppBar extends React.Component {
             onKeyDown={toggleDrawer(false)}
           >
             <List>
-              <ListItem button>
-                <ListItemIcon><Mail /></ListItemIcon>
-                <ListItemText primary="Тест для root" />
+              <ListItem button onClick={() => window.location.assign('/admin/userlist')}>
+                <ListItemIcon><People /></ListItemIcon>
+                <ListItemText primary="Все пользователи" />
               </ListItem>
             </List>
             <Divider />

@@ -67,7 +67,7 @@ class ResetPasswordForm extends React.Component {
       <Box className={classes.main}>
         <Box className={classes.signInForm} boxShadow={2}>
           <Box className={classes.logo}>
-            <img src="../../logo105.png" alt="Logo" className={classes.logoImg} />
+            <img src="../../icons/chrome/chrome-installprocess-128-128-transparent.png" alt="Logo" className={classes.logoImg} />
             <Typography variant="h5">Cloud Service</Typography>
             <Typography variant="subtitle1">Введите новый пароль</Typography>
           </Box>

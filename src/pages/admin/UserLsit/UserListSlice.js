@@ -67,7 +67,6 @@ export const getUserList = (text, role, group, page, size) => (dispatch) => {
       size,
     },
     method: 'GET',
-    timeout: 1000,
     headers: {
       Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
     },
@@ -91,7 +90,6 @@ export const getRoleList = () => (dispatch) => {
   Axios({
     url: 'https://10.188.8.29:5001/api/roles',
     method: 'GET',
-    timeout: 1000,
     headers: {
       Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
     },
@@ -114,7 +112,6 @@ export const getGroupList = () => (dispatch) => {
   Axios({
     url: 'https://10.188.8.29:5001/api/groups',
     method: 'GET',
-    timeout: 1000,
     headers: {
       Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
     },

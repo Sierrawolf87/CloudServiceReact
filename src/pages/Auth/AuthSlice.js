@@ -78,7 +78,6 @@ export const signIn = (username, password) => async (dispatch) => {
   await axios({
     url: 'https://10.188.8.29:5001/api/Users/auth/SignIn',
     method: 'POST',
-    timeout: 10000,
     data: formdata,
   })
     .then((res) => {
@@ -104,7 +103,6 @@ export const ForgotPassword = (username) => async (dispatch) => {
   await axios({
     url: 'https://10.188.8.29:5001/api/Users/auth/ForgotPassword',
     method: 'POST',
-    timeout: 10000,
     data: formdata,
   })
     .then((res) => {
@@ -125,7 +123,6 @@ export const ResetPassword = (code, newPassword, confimPassword) => async (dispa
   await axios({
     url: `https://10.188.8.29:5001/api/Users/auth/ResetPassword/${code}`,
     method: 'POST',
-    timeout: 10000,
     data: formdata,
   })
     .then((res) => {
@@ -146,7 +143,6 @@ export const checkUser = () => (dispatch) => {
   axios({
     url: 'https://10.188.8.29:5001/api/users/auth/GetUserRole',
     method: 'GET',
-    timeout: 10000,
     headers: {
       Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
     },

@@ -10,21 +10,22 @@ import { getRoleList, getGroupList, getUserList } from './UserListSlice';
 const style = () => ({
   root: {
     width: '95vw',
-    height: '60px',
     display: 'flex',
     justifyContent: 'space-evenly',
+    flexWrap: 'wrap',
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: '10px',
   },
   roleSelect: {
+    margin: '10px',
     width: '180px',
   },
-  '@media (max-width:600px)': {
+/*   '@media (max-width:600px)': {
     roleSelect: {
       width: '130px',
     },
-  },
+  }, */
 });
 
 class UserListFilterComponent extends React.Component {

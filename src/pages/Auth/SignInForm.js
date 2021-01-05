@@ -1,5 +1,5 @@
 import {
-  Box, Button, TextField, Typography, withStyles,
+  Box, Button, Paper, TextField, Typography, withStyles,
 } from '@material-ui/core';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -46,7 +46,7 @@ class SignInForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
+      login: '',
       password: '',
     };
   }
@@ -67,19 +67,19 @@ class SignInForm extends React.Component {
     }
     return (
       <Box className={classes.main}>
-        <Box className={classes.signInForm} boxShadow={2}>
+        <Paper className={classes.signInForm} boxShadow={2}>
           <Box className={classes.logo}>
-            <img src="logo105.png" alt="Logo" className={classes.logoImg} />
-            <Typography variant="h5">Cloud Service</Typography>
-            <Typography variant="subtitle1">Вход</Typography>
+            <img src="icons/chrome/chrome-installprocess-128-128-transparent.png" alt="Logo" className={classes.logoImg} />
+            <Typography color="textPrimary" variant="h5">Cloud Service</Typography>
+            <Typography color="textPrimary" variant="subtitle1">Вход</Typography>
           </Box>
-          <TextField id="authusername" label="Логин" variant="outlined" name="username" onChange={(event) => this.OnChangeInputs(event)} value={this.state.username} />
+          <TextField id="authusername" label="Логин" variant="outlined" name="login" autoComplete="off" onChange={(event) => this.OnChangeInputs(event)} value={this.state.login} />
           <TextField id="authpassword" type="password" label="Пароль" variant="outlined" name="password" onChange={(event) => this.OnChangeInputs(event)} value={this.state.password} />
           <Box className={classes.ButtonDivAuth}>
             <Button onClick={() => this.props.history.push(`/auth/ForgotPassword?redirectUrl=${redirect}`)}> Забыли пароль? </Button>
-            <Button variant="contained" color="primary" onClick={() => this.props.signIn(this.state.username, this.state.password)}> Войти </Button>
+            <Button variant="contained" color="primary" onClick={() => this.props.signIn(this.state.login, this.state.password)}> Войти </Button>
           </Box>
-        </Box>
+        </Paper>
         <CSAlert text={this.props.auth.error} variant="error" />
       </Box>
     );

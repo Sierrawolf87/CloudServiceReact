@@ -1,5 +1,5 @@
 import {
-  Box, Button, TextField, Typography, withStyles,
+  Box, Button, Paper, TextField, Typography, withStyles,
 } from '@material-ui/core';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -46,7 +46,7 @@ class ForgotPasswordForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
+      login: '',
     };
   }
 
@@ -64,17 +64,17 @@ class ForgotPasswordForm extends React.Component {
     }
     return (
       <Box className={classes.main}>
-        <Box className="signInForm" boxShadow={2}>
+        <Paper className={classes.signInForm} boxShadow={2}>
           <Box className={classes.logo}>
-            <img src="../logo105.png" alt="Logo" className={classes.logoImg} />
+            <img src="../icons/chrome/chrome-installprocess-128-128-transparent.png" alt="Logo" className={classes.logoImg} />
             <Typography variant="h5">Cloud Service</Typography>
             <Typography variant="subtitle1">Сброс пароля</Typography>
           </Box>
-          <TextField id="authusername" label="Логин" variant="outlined" name="username" onChange={(event) => this.OnChangeInputs(event)} value={this.state.username} />
+          <TextField id="authusername" label="Логин" variant="outlined" name="login" onChange={(event) => this.OnChangeInputs(event)} value={this.state.login} />
           <Box className={classes.ButtonDivForgot}>
-            <Button variant="contained" color="primary" onClick={() => this.props.ForgotPassword(this.state.username)}> Восстановить </Button>
+            <Button variant="contained" color="primary" onClick={() => this.props.ForgotPassword(this.state.login)}> Восстановить </Button>
           </Box>
-        </Box>
+        </Paper>
         <CSAlert text={this.props.auth.error} variant="error" />
       </Box>
     );

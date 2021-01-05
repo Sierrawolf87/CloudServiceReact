@@ -15,6 +15,7 @@ const styles = () => ({
     alignItems: 'center',
     overflowY: 'auto',
     maxHeight: 'calc(100vh - 64px - 60px)',
+    // Тут не знаю что делать. Надо сделать div максиум до конца страницы
   },
 });
 
