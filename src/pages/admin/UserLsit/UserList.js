@@ -10,6 +10,7 @@ const style = () => ({
     justifyContent: 'center',
     flexDirection: 'column',
     alignItems: 'center',
+    maxHeight: `calc(100vh - ${document.getElementsByTagName('header')[0].clientHeight}px)`,
   },
 });
 

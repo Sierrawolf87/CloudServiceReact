@@ -9,13 +9,11 @@ import { getUserList } from './UserListSlice';
 const styles = () => ({
   userList: {
     width: '100%',
+    overflowY: 'auto',
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'center',
     alignItems: 'center',
-    overflowY: 'auto',
-    maxHeight: 'calc(100vh - 64px - 60px)',
-    // Тут не знаю что делать. Надо сделать div максиум до конца страницы
   },
 });
 
