@@ -9,7 +9,7 @@ import { Skeleton } from '@material-ui/lab';
 const useStyles = makeStyles({
   root: {
     width: '300px',
-    height: '330px',
+    height: 'max-content',
     margin: '16px',
     whiteSpace: 'pre-wrap',
   },

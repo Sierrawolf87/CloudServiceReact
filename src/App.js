@@ -12,6 +12,7 @@ import ResetPasswordForm from './pages/Auth/ResetPasswordForm';
 import UserList from './pages/admin/UserLsit/UserList';
 import PrivateRoute from './PrivateRoute';
 import TopAppBar from './modules/TopAppBar/TopAppBar';
+import DisciplineList from './pages/admin/DisciplineList/DisciplineList';
 
 /* Axios.defaults.baseURL = 'https://10.188.8.29:5001/api/';
 Axios.defaults.headers = {
@@ -41,6 +42,7 @@ function App() {
             <Route exact path="/auth/ForgotPassword" component={ForgotPasswordForm} />
             <Route exact path="/auth/ResetPassword/:code" component={ResetPasswordForm} />
             <PrivateRoute exact path="/admin/userlist" userRole="root" component={UserList} />
+            <PrivateRoute exact path="/admin/DisciplineList" userRole="root" component={DisciplineList} />
           </Switch>
         </BrowserRouter>
       </Box>

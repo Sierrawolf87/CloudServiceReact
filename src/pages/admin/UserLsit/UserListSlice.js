@@ -8,7 +8,6 @@ export const UserListSlice = createSlice({
     userRoleData: [],
     userGroupData: [],
     nextPage: 1,
-    nextSearchPage: 1,
     error: '',
     loading: true,
   },

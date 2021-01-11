@@ -21,11 +21,6 @@ const style = () => ({
     margin: '10px',
     width: '180px',
   },
-/*   '@media (max-width:600px)': {
-    roleSelect: {
-      width: '130px',
-    },
-  }, */
 });
 
 class UserListFilterComponent extends React.Component {

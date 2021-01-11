@@ -4,7 +4,7 @@ import {
 import React from 'react';
 import { connect } from 'react-redux';
 import { ResetPassword } from './AuthSlice';
-import CSAlert from '../../modules/Alerts/CSAlert';
+import CSAlert from '../../modules/components/Alerts/CSAlert';
 
 const styles = () => ({
   main: {

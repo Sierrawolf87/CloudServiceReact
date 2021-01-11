@@ -4,7 +4,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import CSAlert from '../../../modules/components/Alerts/CSAlert';
 import { CSCard, CSCardSkeleton } from '../../../modules/components/CSCard/CSCard';
-import { getUserList } from './UserListSlice';
+import { getDisciplineList } from './DisciplineListSlice';
 
 const styles = () => ({
   userList: {
@@ -17,17 +17,17 @@ const styles = () => ({
   },
 });
 
-class UserListComponent extends React.Component {
+class DisciplineListComponent extends React.Component {
   constructor(props) {
     super(props);
-    this.props.getUserList(this.props.userList.nextPage);
+    this.props.getDisciplineList(this.props.disciplineList.nextPage);
   }
 
   // eslint-disable-next-line class-methods-use-this
   windowScroll(e) {
     if ((e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight)
-        && this.props.userList.nextPage !== null) {
-      this.props.getUserList(this.props.userList.nextPage);
+        && this.props.disciplineList.nextPage !== null) {
+      this.props.getDisciplineList(this.props.disciplineList.nextPage);
     }
   }
 
@@ -43,23 +43,17 @@ class UserListComponent extends React.Component {
         icon: <Delete />,
       },
     ];
-    if (this.props.userList.loading === false) {
+    console.log(this.props.disciplineList.disciplineListData);
+    if (this.props.disciplineList.loading === false) {
       return (
         <Box className={classes.userList} onScroll={(e) => this.windowScroll(e)}>
-          {this.props.userList.userListData.map((item) => (
+          {this.props.disciplineList.disciplineListData.map((item) => (
             <CSCard
               key={item.id}
-              header={item.userName}
-              title={item.initials}
-              signature={item.role.name}
-              body={
-              `ID: ${item.id} \n`
-              + `Фамилия: ${item.surname} \n`
-              + `Имя: ${item.name} \n`
-              + `Отчество: ${item.patronymic} \n`
-              + `Студенческий: ${item.reportCard} \n`
-              + `Email: ${item.email} \n`
-            }
+              header={item.id}
+              title={item.shortName}
+              signature={item.name}
+              body=""
               buttons={buttons}
             />
           ))}
@@ -76,21 +70,21 @@ class UserListComponent extends React.Component {
         <CSCardSkeleton />
         <CSCardSkeleton />
         <CSCardSkeleton />
-        <CSAlert text={this.props.userList.error} variant="error" />
+        <CSAlert text={this.props.disciplineList.error} variant="error" />
       </Box>
     );
   }
 }
 
 const mapStateToProps = (state) => ({
-  userList: state.userList,
+  disciplineList: state.disciplineList,
 });
 
 const mapDispatchToProps = () => (dispatch) => ({
-  getUserList: (page, size) => dispatch(getUserList(null, null, null, page, size)),
+  getDisciplineList: (page, size) => dispatch(getDisciplineList(null, null, page, size)),
 });
 
 export default withStyles(styles)(connect(
   mapStateToProps,
   mapDispatchToProps,
-)(UserListComponent));
+)(DisciplineListComponent));
