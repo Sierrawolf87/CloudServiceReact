@@ -2,7 +2,6 @@ import { Box, withStyles } from '@material-ui/core';
 import { Delete, Edit } from '@material-ui/icons';
 import React from 'react';
 import { connect } from 'react-redux';
-import CSAlert from '../../../modules/components/Alerts/CSAlert';
 import { CSCard, CSCardSkeleton } from '../../../modules/components/CSCard/CSCard';
 import { getDisciplineList } from './DisciplineListSlice';
 
@@ -70,7 +69,6 @@ class DisciplineListComponent extends React.Component {
         <CSCardSkeleton />
         <CSCardSkeleton />
         <CSCardSkeleton />
-        <CSAlert text={this.props.disciplineList.error} variant="error" />
       </Box>
     );
   }

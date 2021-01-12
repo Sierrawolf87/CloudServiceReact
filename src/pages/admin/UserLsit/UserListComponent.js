@@ -1,10 +1,10 @@
 import { Box, withStyles } from '@material-ui/core';
 import { Delete, Edit } from '@material-ui/icons';
+import { withSnackbar } from 'notistack';
 import React from 'react';
 import { connect } from 'react-redux';
-import CSAlert from '../../../modules/components/Alerts/CSAlert';
 import { CSCard, CSCardSkeleton } from '../../../modules/components/CSCard/CSCard';
-import { getUserList } from './UserListSlice';
+import { ClearAlertError, getUserById, getUserList } from './UserListSlice';
 
 const styles = () => ({
   userList: {
@@ -23,7 +23,6 @@ class UserListComponent extends React.Component {
     this.props.getUserList(this.props.userList.nextPage);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   windowScroll(e) {
     if ((e.target.scrollTop + e.target.clientHeight >= e.target.scrollHeight)
         && this.props.userList.nextPage !== null) {
@@ -35,7 +34,10 @@ class UserListComponent extends React.Component {
     const { classes } = this.props;
     const buttons = [
       {
-        actionOnClick: () => { },
+        actionOnClick: (id) => {
+          this.props.getUserById(id);
+          this.props.onOpenDialog('userEditOpen', id);
+        },
         icon: <Edit />,
       },
       {
@@ -43,12 +45,17 @@ class UserListComponent extends React.Component {
         icon: <Delete />,
       },
     ];
+    if (this.props.userList.error) {
+      const { enqueueSnackbar } = this.props;
+      enqueueSnackbar(this.props.userList.error, { variant: 'error', onClose: () => { this.props.clearAlertError(); } });
+    }
     if (this.props.userList.loading === false) {
       return (
         <Box className={classes.userList} onScroll={(e) => this.windowScroll(e)}>
           {this.props.userList.userListData.map((item) => (
             <CSCard
               key={item.id}
+              id={item.id}
               header={item.userName}
               title={item.initials}
               signature={item.role.name}
@@ -76,7 +83,6 @@ class UserListComponent extends React.Component {
         <CSCardSkeleton />
         <CSCardSkeleton />
         <CSCardSkeleton />
-        <CSAlert text={this.props.userList.error} variant="error" />
       </Box>
     );
   }
@@ -88,9 +94,11 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = () => (dispatch) => ({
   getUserList: (page, size) => dispatch(getUserList(null, null, null, page, size)),
+  getUserById: (id) => dispatch(getUserById(id)),
+  clearAlertError: () => dispatch(ClearAlertError()),
 });
 
-export default withStyles(styles)(connect(
+export default withSnackbar(withStyles(styles)(connect(
   mapStateToProps,
   mapDispatchToProps,
-)(UserListComponent));
+)(UserListComponent)));

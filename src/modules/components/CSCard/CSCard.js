@@ -41,7 +41,7 @@ export function CSCard(props) {
       </CardContent>
       <CardActions>
         {props.buttons.map((item) => (
-          <IconButton size="medium" onClick={item.actionOnClick}>
+          <IconButton size="medium" onClick={() => { item.actionOnClick(props.id); }}>
             {item.icon}
           </IconButton>
         ))}

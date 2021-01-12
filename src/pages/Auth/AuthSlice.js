@@ -135,9 +135,6 @@ export const ResetPassword = (code, newPassword, confimPassword) => async (dispa
     });
 };
 
-export const clearError = () => (dispatch) => dispatch(ClearAlertError());
-export const clearSuccess = () => (dispatch) => dispatch(ClearAlertSuccess());
-
 export const checkUser = () => (dispatch) => {
   dispatch(CheckStart());
   axios({

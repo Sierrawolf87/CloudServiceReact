@@ -7,6 +7,8 @@ export const UserListSlice = createSlice({
     userListData: [],
     userRoleData: [],
     userGroupData: [],
+    userById: {},
+    userByIdLoading: true,
     nextPage: 1,
     error: '',
     loading: true,
@@ -39,12 +41,28 @@ export const UserListSlice = createSlice({
       state.userGroupData = [];
       state.error = action.payload;
     },
+    GetUserByIdStart: (state) => {
+      state.userById = {};
+      state.userByIdLoading = true;
+    },
+    GetUserByIdSuccessful: (state, action) => {
+      state.userById = action.payload;
+      state.userByIdLoading = false;
+    },
+    GetUserByIdFailure: (state, action) => {
+      state.error = action.payload;
+      state.userByIdLoading = true;
+    },
+    ClearAlertError: (state) => {
+      state.error = '';
+    },
   },
 });
 
 export const {
   GetUserListSuccessful, GetUserListFailure, ClearUserList, GetRoleListSuccessful,
-  GetRoleListFailure, GetGroupListSuccessful, GetGroupListFailure,
+  GetRoleListFailure, GetGroupListSuccessful, GetGroupListFailure, GetUserByIdStart,
+  GetUserByIdSuccessful, GetUserByIdFailure, ClearAlertError,
 } = UserListSlice.actions;
 
 let oldText = '';
@@ -76,6 +94,7 @@ export const getUserList = (text, role, group, page, size) => (dispatch) => {
       }
     })
     .catch((error) => {
+      console.log(error);
       const { status } = error.request;
       let currentError;
       if (status === 0) currentError = 'Ошибка подключения к серверу';
@@ -126,6 +145,49 @@ export const getGroupList = () => (dispatch) => {
       if (status === 401) window.location.assign(`/auth?redirectUrl=${window.location.href}`);
       if (status >= 400 && status < 500) currentError = error.request.response;
       dispatch(GetUserListFailure(currentError));
+    });
+};
+
+export const getUserById = (id) => (dispatch) => {
+  dispatch(GetUserByIdStart());
+  Axios({
+    url: `https://10.188.8.29:5001/api/users/${id}`,
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
+    },
+  })
+    .then((res) => {
+      dispatch(GetUserByIdSuccessful(res.data));
+    })
+    .catch((error) => {
+      const { status } = error.request;
+      let currentError;
+      if (status === 0) currentError = 'Ошибка подключения к серверу';
+      if (status === 401) window.location.assign(`/auth?redirectUrl=${window.location.href}`);
+      if (status >= 400 && status < 500) currentError = error.request.response;
+      dispatch(GetUserByIdFailure(currentError));
+    });
+};
+
+export const putChanges = (data) => (dispatch) => {
+  Axios({
+    url: `https://10.188.8.29:5001/api/users/${data.id}`,
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
+    },
+  })
+    .then((res) => {
+      if (res.request.status === 204) dispatch();
+    })
+    .catch((error) => {
+      const { status } = error.request;
+      let currentError;
+      if (status === 0) currentError = 'Ошибка подключения к серверу';
+      if (status === 401) window.location.assign(`/auth?redirectUrl=${window.location.href}`);
+      if (status >= 400 && status < 500) currentError = error.request.response;
+      dispatch(GetUserByIdFailure(currentError));
     });
 };
 

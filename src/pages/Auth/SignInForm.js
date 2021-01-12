@@ -1,10 +1,10 @@
 import {
   Box, Button, Paper, TextField, Typography, withStyles,
 } from '@material-ui/core';
+import { withSnackbar } from 'notistack';
 import React from 'react';
 import { connect } from 'react-redux';
-import { signIn } from './AuthSlice';
-import CSAlert from '../../modules/components/Alerts/CSAlert';
+import { ClearAlertError, signIn } from './AuthSlice';
 
 const styles = () => ({
   main: {
@@ -65,9 +65,13 @@ class SignInForm extends React.Component {
     } else if (this.props.auth.userData.isAuthorized === true) {
       window.location.assign('/');
     }
+    if (this.props.auth.error) {
+      const { enqueueSnackbar } = this.props;
+      enqueueSnackbar(this.props.auth.error, { variant: 'error', onClose: () => { this.props.clearAlertError(); } });
+    }
     return (
       <Box className={classes.main}>
-        <Paper className={classes.signInForm} boxShadow={2}>
+        <Paper className={classes.signInForm}>
           <Box className={classes.logo}>
             <img src="icons/chrome/chrome-installprocess-128-128-transparent.png" alt="Logo" className={classes.logoImg} />
             <Typography color="textPrimary" variant="h5">Cloud Service</Typography>
@@ -80,7 +84,6 @@ class SignInForm extends React.Component {
             <Button variant="contained" color="primary" onClick={() => this.props.signIn(this.state.login, this.state.password)}> Войти </Button>
           </Box>
         </Paper>
-        <CSAlert text={this.props.auth.error} variant="error" />
       </Box>
     );
   }
@@ -92,9 +95,10 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = () => (dispatch) => ({
   signIn: (username, password) => dispatch(signIn(username, password)),
+  clearAlertError: () => dispatch(ClearAlertError()),
 });
 
-export default withStyles(styles)(connect(
+export default withSnackbar(withStyles(styles)(connect(
   mapStateToProps,
   mapDispatchToProps,
-)(SignInForm));
+)(SignInForm)));

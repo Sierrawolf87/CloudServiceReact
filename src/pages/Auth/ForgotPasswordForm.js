@@ -1,10 +1,10 @@
 import {
   Box, Button, Paper, TextField, Typography, withStyles,
 } from '@material-ui/core';
+import { withSnackbar } from 'notistack';
 import React from 'react';
 import { connect } from 'react-redux';
-import { ForgotPassword } from './AuthSlice';
-import CSAlert from '../../modules/components/Alerts/CSAlert';
+import { ClearAlertError, ClearAlertSuccess, ForgotPassword } from './AuthSlice';
 
 const styles = () => ({
   main: {
@@ -62,9 +62,17 @@ class ForgotPasswordForm extends React.Component {
     if (this.props.auth.userData.isAuthorized && redirect !== '') {
       window.location.replace(redirect);
     }
+    if (this.props.auth.error) {
+      const { enqueueSnackbar } = this.props;
+      enqueueSnackbar(this.props.auth.error, { variant: 'error', onClose: () => { this.props.clearAlertError(); } });
+    }
+    if (this.props.auth.success) {
+      const { enqueueSnackbar } = this.props;
+      enqueueSnackbar(this.props.auth.success, { variant: 'success', onClose: () => { this.props.clearAlertSuccess(); } });
+    }
     return (
       <Box className={classes.main}>
-        <Paper className={classes.signInForm} boxShadow={2}>
+        <Paper className={classes.signInForm}>
           <Box className={classes.logo}>
             <img src="../icons/chrome/chrome-installprocess-128-128-transparent.png" alt="Logo" className={classes.logoImg} />
             <Typography variant="h5">Cloud Service</Typography>
@@ -75,7 +83,6 @@ class ForgotPasswordForm extends React.Component {
             <Button variant="contained" color="primary" onClick={() => this.props.ForgotPassword(this.state.login)}> Восстановить </Button>
           </Box>
         </Paper>
-        <CSAlert text={this.props.auth.error} variant="error" />
       </Box>
     );
   }
@@ -87,9 +94,11 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = () => (dispatch) => ({
   ForgotPassword: (username) => dispatch(ForgotPassword(username)),
+  clearAlertError: () => dispatch(ClearAlertError()),
+  clearAlertSuccess: () => dispatch(ClearAlertSuccess()),
 });
 
-export default withStyles(styles)(connect(
+export default withSnackbar(withStyles(styles)(connect(
   mapStateToProps,
   mapDispatchToProps,
-)(ForgotPasswordForm));
+)(ForgotPasswordForm)));
