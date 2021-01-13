@@ -11,6 +11,7 @@ export const UserListSlice = createSlice({
     userByIdLoading: true,
     nextPage: 1,
     error: '',
+    success: '',
     loading: true,
   },
   reducers: {
@@ -53,8 +54,17 @@ export const UserListSlice = createSlice({
       state.error = action.payload;
       state.userByIdLoading = true;
     },
+    PutUserSuccessful: (state, action) => {
+      state.success = action.payload;
+    },
+    PutUserFailure: (state, action) => {
+      state.error = action.payload;
+    },
     ClearAlertError: (state) => {
       state.error = '';
+    },
+    ClearAlertSuccess: (state) => {
+      state.success = '';
     },
   },
 });
@@ -62,7 +72,8 @@ export const UserListSlice = createSlice({
 export const {
   GetUserListSuccessful, GetUserListFailure, ClearUserList, GetRoleListSuccessful,
   GetRoleListFailure, GetGroupListSuccessful, GetGroupListFailure, GetUserByIdStart,
-  GetUserByIdSuccessful, GetUserByIdFailure, ClearAlertError,
+  GetUserByIdSuccessful, GetUserByIdFailure, PutUserSuccessful, PutUserFailure,
+  ClearAlertError, ClearAlertSuccess,
 } = UserListSlice.actions;
 
 let oldText = '';
@@ -174,12 +185,13 @@ export const putChanges = (data) => (dispatch) => {
   Axios({
     url: `https://10.188.8.29:5001/api/users/${data.id}`,
     method: 'PUT',
+    data,
     headers: {
       Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
     },
   })
     .then((res) => {
-      if (res.request.status === 204) dispatch();
+      if (res.request.status === 204) dispatch(PutUserSuccessful('Изменения сохранены'));
     })
     .catch((error) => {
       const { status } = error.request;
@@ -187,7 +199,7 @@ export const putChanges = (data) => (dispatch) => {
       if (status === 0) currentError = 'Ошибка подключения к серверу';
       if (status === 401) window.location.assign(`/auth?redirectUrl=${window.location.href}`);
       if (status >= 400 && status < 500) currentError = error.request.response;
-      dispatch(GetUserByIdFailure(currentError));
+      dispatch(PutUserFailure(currentError));
     });
 };
 
