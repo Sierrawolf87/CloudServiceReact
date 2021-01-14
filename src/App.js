@@ -22,6 +22,18 @@ Axios.defaults.headers = {
 };
  */
 
+/* axios.interceptors.response.use(
+  (response) => { console.log(response); },
+  (error) => {
+    console.log(error, 'asd');
+    if (error.request) {
+      const { status } = error.request;
+      if (status === 0) console.log('Ошибка подключения к серверу');
+      // if (status === 401) window.location.assign(`/auth?redirectUrl=${window.location.href}`);
+    }
+  },
+); */
+
 function App() {
   const darkTheme = useMediaQuery('(prefers-color-scheme: dark)');
 

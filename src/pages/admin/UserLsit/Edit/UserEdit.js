@@ -26,6 +26,7 @@ class UserEdit extends React.Component {
     super(props);
     this.state = {
       dataInState: false,
+      loading: true,
       data: {
         id: '',
         userName: '',
@@ -48,6 +49,7 @@ class UserEdit extends React.Component {
       if (!userByIdLoading && !this.state.dataInState) {
         this.setState({
           dataInState: true,
+          loading: false,
           data: {
             id: userById.id,
             userName: userById.userName,
@@ -57,10 +59,10 @@ class UserEdit extends React.Component {
             reportCard: userById.reportCard,
             email: userById.email,
             role: {
-              id: '',
+              id: userById.role.id,
             },
             group: {
-              id: '',
+              id: userById.group.id,
             },
           },
         });
@@ -84,6 +86,7 @@ class UserEdit extends React.Component {
     enqueueSnackbar('Изменения не сохранены', { variant: 'info' });
     this.setState({
       dataInState: false,
+      loading: true,
     });
   }
 
@@ -92,13 +95,13 @@ class UserEdit extends React.Component {
     this.props.close('userEditOpen');
     this.setState({
       dataInState: false,
+      loading: true,
     });
   }
 
   renderDialogBody() {
     const { classes } = this.props;
-    const { userByIdLoading } = this.props.userList;
-    if (userByIdLoading) {
+    if (this.state.loading) {
       return (
         <Box>
           <Box width="100%" height="150px" display="flex" justifyContent="center" alignItems="center">
@@ -112,6 +115,9 @@ class UserEdit extends React.Component {
         </Box>
       );
     }
+
+    const defaultRole = this.props.userList.userRoleData.filter((item) => item.id === this.state.data.role.id)[0];
+    const defaultGroup = this.props.userList.userGroupData.filter((item) => item.id === this.state.data.group.id)[0];
 
     return (
       <Box>
@@ -129,6 +135,7 @@ class UserEdit extends React.Component {
             autoHighlight
             options={this.props.userList.userRoleData}
             getOptionLabel={(option) => option.name}
+            defaultValue={defaultRole}
             renderInput={(params) => <TextField {...params} label="Роль" />}
             onChange={(event, option) => {
               this.setState((prevState) => ({
@@ -148,6 +155,7 @@ class UserEdit extends React.Component {
             name="groupId"
             options={this.props.userList.userGroupData}
             getOptionLabel={(option) => option.name}
+            defaultValue={defaultGroup}
             renderInput={(params) => <TextField {...params} label="Группа" />}
             onChange={(event, option) => {
               this.setState((prevState) => ({

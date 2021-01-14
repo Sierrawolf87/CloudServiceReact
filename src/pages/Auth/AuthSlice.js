@@ -75,7 +75,7 @@ export const signIn = (username, password) => async (dispatch) => {
   const formdata = new FormData();
   formdata.append('username', username);
   formdata.append('password', password);
-  await axios({
+  axios({
     url: 'https://10.188.8.29:5001/api/Users/auth/SignIn',
     method: 'POST',
     data: formdata,
@@ -91,16 +91,16 @@ export const signIn = (username, password) => async (dispatch) => {
     });
 };
 
-export const signOut = () => async (dispatch) => {
+export const signOut = () => (dispatch) => {
   localStorage.removeItem('TOKEN');
   dispatch(AuthenticationSignOut());
 };
 
-export const ForgotPassword = (username) => async (dispatch) => {
+export const ForgotPassword = (username) => (dispatch) => {
   dispatch(AuthenticationStart());
   const formdata = new FormData();
   formdata.append('username', username);
-  await axios({
+  axios({
     url: 'https://10.188.8.29:5001/api/Users/auth/ForgotPassword',
     method: 'POST',
     data: formdata,
@@ -115,12 +115,12 @@ export const ForgotPassword = (username) => async (dispatch) => {
     });
 };
 
-export const ResetPassword = (code, newPassword, confimPassword) => async (dispatch) => {
+export const ResetPassword = (code, newPassword, confimPassword) => (dispatch) => {
   dispatch(AuthenticationStart());
   const formdata = new FormData();
   formdata.append('NewPassword', newPassword);
   formdata.append('ConfimPassword', confimPassword);
-  await axios({
+  axios({
     url: `https://10.188.8.29:5001/api/Users/auth/ResetPassword/${code}`,
     method: 'POST',
     data: formdata,
