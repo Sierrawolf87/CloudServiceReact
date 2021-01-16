@@ -86,7 +86,7 @@ export const getUserList = (text, role, group, page, size) => (dispatch) => {
   oldGroup = group;
   oldRole = role;
   Axios({
-    url: 'https://10.188.8.29:5001/api/users/withpage',
+    url: 'users/withpage',
     params: {
       text,
       role,
@@ -117,7 +117,7 @@ export const getUserList = (text, role, group, page, size) => (dispatch) => {
 
 export const getRoleList = () => (dispatch) => {
   Axios({
-    url: 'https://10.188.8.29:5001/api/roles',
+    url: 'roles',
     method: 'GET',
     headers: {
       Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
@@ -139,7 +139,7 @@ export const getRoleList = () => (dispatch) => {
 
 export const getGroupList = () => (dispatch) => {
   Axios({
-    url: 'https://10.188.8.29:5001/api/groups',
+    url: 'groups',
     method: 'GET',
     headers: {
       Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
@@ -162,7 +162,7 @@ export const getGroupList = () => (dispatch) => {
 export const getUserById = (id) => (dispatch) => {
   dispatch(GetUserByIdStart());
   Axios({
-    url: `https://10.188.8.29:5001/api/users/${id}`,
+    url: `users/${id}`,
     method: 'GET',
     headers: {
       Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
@@ -183,7 +183,7 @@ export const getUserById = (id) => (dispatch) => {
 
 export const putChanges = (data) => (dispatch) => {
   Axios({
-    url: `https://10.188.8.29:5001/api/users/${data.id}`,
+    url: `users/${data.id}`,
     method: 'PUT',
     data,
     headers: {

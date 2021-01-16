@@ -47,7 +47,7 @@ export const getDisciplineList = (text, ownerId, page, size) => (dispatch) => {
   oldText = text;
   oldOwnerId = ownerId;
   Axios({
-    url: 'https://10.188.8.29:5001/api/disciplines/withpage',
+    url: 'disciplines/withpage',
     params: {
       text,
       ownerId,
@@ -77,7 +77,7 @@ export const getDisciplineList = (text, ownerId, page, size) => (dispatch) => {
 
 export const getUserList = () => (dispatch) => {
   Axios({
-    url: 'https://10.188.8.29:5001/api/users',
+    url: 'users',
     method: 'GET',
     headers: {
       Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,

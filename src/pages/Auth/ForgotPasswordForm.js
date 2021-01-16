@@ -4,7 +4,7 @@ import {
 import { withSnackbar } from 'notistack';
 import React from 'react';
 import { connect } from 'react-redux';
-import { ClearAlertError, ClearAlertSuccess, ForgotPassword } from './AuthSlice';
+import { ForgotPassword } from './AuthSlice';
 
 const styles = () => ({
   main: {
@@ -62,14 +62,6 @@ class ForgotPasswordForm extends React.Component {
     if (this.props.auth.userData.isAuthorized && redirect !== '') {
       window.location.replace(redirect);
     }
-    if (this.props.auth.error) {
-      const { enqueueSnackbar } = this.props;
-      enqueueSnackbar(this.props.auth.error, { variant: 'error', onClose: () => { this.props.clearAlertError(); } });
-    }
-    if (this.props.auth.success) {
-      const { enqueueSnackbar } = this.props;
-      enqueueSnackbar(this.props.auth.success, { variant: 'success', onClose: () => { this.props.clearAlertSuccess(); } });
-    }
     return (
       <Box className={classes.main}>
         <Paper className={classes.signInForm}>
@@ -94,8 +86,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = () => (dispatch) => ({
   ForgotPassword: (username) => dispatch(ForgotPassword(username)),
-  clearAlertError: () => dispatch(ClearAlertError()),
-  clearAlertSuccess: () => dispatch(ClearAlertSuccess()),
 });
 
 export default withSnackbar(withStyles(styles)(connect(

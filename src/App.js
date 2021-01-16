@@ -7,6 +7,8 @@ import {
 } from '@material-ui/core';
 import { SnackbarProvider } from 'notistack';
 import { Close } from '@material-ui/icons';
+
+import axios from 'axios';
 import Root from './pages/Root/root';
 import SignInForm from './pages/Auth/SignInForm';
 import ForgotPasswordForm from './pages/Auth/ForgotPasswordForm';
@@ -15,24 +17,34 @@ import UserList from './pages/admin/UserLsit/UserList';
 import PrivateRoute from './PrivateRoute';
 import TopAppBar from './modules/TopAppBar/TopAppBar';
 import DisciplineList from './pages/admin/DisciplineList/DisciplineList';
+import Notifier from './modules/Alert/Alert';
+import { ShowNotification } from './modules/Alert/AlertSlice';
+import store from './app/store';
 
-/* Axios.defaults.baseURL = 'https://10.188.8.29:5001/api/';
-Axios.defaults.headers = {
-  Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
-};
- */
+axios.defaults.baseURL = 'https://10.188.8.29:5001/api/';
 
-/* axios.interceptors.response.use(
-  (response) => { console.log(response); },
+axios.interceptors.request.use(
+  (request) => {
+    request.headers = {
+      Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
+    };
+    return request;
+  },
+  (error) => Promise.reject(error),
+);
+
+axios.interceptors.response.use(
+  (response) => response,
   (error) => {
-    console.log(error, 'asd');
     if (error.request) {
       const { status } = error.request;
-      if (status === 0) console.log('Ошибка подключения к серверу');
-      // if (status === 401) window.location.assign(`/auth?redirectUrl=${window.location.href}`);
+      if (status === 0) store.dispatch(ShowNotification('Ошибка подключения к серверу', 'error'));
+      if (status === 401 && window.location.pathname !== '/') window.location.assign(`/auth?redirectUrl=${window.location.href}`);
+      if (status >= 400 && status < 500) store.dispatch(ShowNotification(error.request.response, 'error'));
     }
+    return Promise.reject(error);
   },
-); */
+);
 
 function App() {
   const darkTheme = useMediaQuery('(prefers-color-scheme: dark)');
@@ -67,6 +79,7 @@ function App() {
         )}
       >
         <Box>
+          <Notifier />
           <TopAppBar />
           <BrowserRouter>
             <Switch>

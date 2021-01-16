@@ -37,10 +37,27 @@ class TopAppBar extends React.Component {
       anchorEl: null,
       redirect: false,
     };
-    this.props.checkUser();
+  }
+
+  componentDidMount() {
+    if (
+      !(window.location.pathname === '/auth'
+      || window.location.pathname === '/auth/ForgotPassword'
+      || window.location.pathname === '/auth/ResetPassword')
+    ) {
+      this.props.checkUser();
+    }
   }
 
   buttonOrMenu() {
+    if (
+      window.location.pathname === '/auth'
+      || window.location.pathname === '/auth/ForgotPassword'
+      || window.location.pathname === '/auth/ResetPassword'
+    ) {
+      return (<div />);
+    }
+
     const handleMenu = (event) => {
       this.setState({
         accountMenuOpen: true,

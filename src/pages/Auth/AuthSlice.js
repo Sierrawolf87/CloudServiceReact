@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { ShowNotification } from '../../modules/Alert/AlertSlice';
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -10,15 +11,11 @@ export const authSlice = createSlice({
       user_id: '',
       isAuthorized: false,
     },
-    error: '',
-    success: '',
     check: false,
   },
   reducers: {
     AuthenticationStart: (state) => {
       state.userData.isAuthorized = false;
-      state.error = '';
-      state.success = '';
     },
     AuthenticationSuccessful: (state, action) => {
       state.userData.token = action.payload.token;
@@ -31,18 +28,8 @@ export const authSlice = createSlice({
       state.userData.user_id = '';
       state.userData.isAuthorized = false;
     },
-    AuthenticationFailure: (state, action) => {
+    AuthenticationFailure: (state) => {
       state.userData.isAuthorized = false;
-      state.error = action.payload;
-    },
-    AlertSuccessful: (state, action) => {
-      state.success = action.payload;
-    },
-    ClearAlertError: (state) => {
-      state.error = '';
-    },
-    ClearAlertSuccess: (state) => {
-      state.success = '';
     },
     CheckStart: (state) => {
       state.check = false;
@@ -53,8 +40,7 @@ export const authSlice = createSlice({
       state.userData.isAuthorized = true;
       state.check = true;
     },
-    CheckFailure: (state, action) => {
-      state.error = action.payload;
+    CheckFailure: (state) => {
       state.userData.isAuthorized = false;
       state.check = true;
     },
@@ -63,20 +49,20 @@ export const authSlice = createSlice({
 
 export const {
   AuthenticationStart, AuthenticationSuccessful, AuthenticationSignOut, AuthenticationFailure,
-  AlertSuccessful, ClearAlertError, ClearAlertSuccess, CheckSuccessful, CheckFailure, CheckStart,
+  CheckSuccessful, CheckFailure, CheckStart,
 } = authSlice.actions;
 
 const writeToSession = (data) => {
   localStorage.setItem('TOKEN', data.token);
 };
 
-export const signIn = (username, password) => async (dispatch) => {
+export const signIn = (username, password) => (dispatch) => {
   dispatch(AuthenticationStart());
   const formdata = new FormData();
   formdata.append('username', username);
   formdata.append('password', password);
   axios({
-    url: 'https://10.188.8.29:5001/api/Users/auth/SignIn',
+    url: 'Users/auth/SignIn',
     method: 'POST',
     data: formdata,
   })
@@ -84,11 +70,7 @@ export const signIn = (username, password) => async (dispatch) => {
       dispatch(AuthenticationSuccessful(res.data));
       writeToSession(res.data);
     })
-    .catch((error) => {
-      const { status } = error.request;
-      if (status === 0) dispatch(AuthenticationFailure('Ошибка подключения к серверу'));
-      if (status >= 400 && status < 500) dispatch(AuthenticationFailure(error.request.response));
-    });
+    .catch((error) => error);
 };
 
 export const signOut = () => (dispatch) => {
@@ -101,18 +83,14 @@ export const ForgotPassword = (username) => (dispatch) => {
   const formdata = new FormData();
   formdata.append('username', username);
   axios({
-    url: 'https://10.188.8.29:5001/api/Users/auth/ForgotPassword',
+    url: 'Users/auth/ForgotPassword',
     method: 'POST',
     data: formdata,
   })
     .then((res) => {
-      dispatch(AlertSuccessful(res.data));
+      dispatch(dispatch(ShowNotification(res.data, 'success')));
     })
-    .catch((error) => {
-      const { status } = error.request;
-      if (status === 0) dispatch(AuthenticationFailure('Ошибка подключения к серверу'));
-      if (status >= 400 && status < 500) dispatch(AuthenticationFailure(error.request.response));
-    });
+    .catch((error) => error);
 };
 
 export const ResetPassword = (code, newPassword, confimPassword) => (dispatch) => {
@@ -121,28 +99,22 @@ export const ResetPassword = (code, newPassword, confimPassword) => (dispatch) =
   formdata.append('NewPassword', newPassword);
   formdata.append('ConfimPassword', confimPassword);
   axios({
-    url: `https://10.188.8.29:5001/api/Users/auth/ResetPassword/${code}`,
+    url: `Users/auth/ResetPassword/${code}`,
     method: 'POST',
     data: formdata,
   })
     .then((res) => {
-      dispatch(AlertSuccessful(res.data));
+      dispatch(dispatch(ShowNotification(res.data, 'success')));
+      setTimeout(() => { window.location.assign('/auth'); }, 2000);
     })
-    .catch((error) => {
-      const { status } = error.request;
-      if (status === 0) dispatch(AuthenticationFailure('Ошибка подключения к серверу'));
-      if (status >= 400 && status < 500) dispatch(AuthenticationFailure(error.request.response));
-    });
+    .catch((error) => error);
 };
 
 export const checkUser = () => (dispatch) => {
   dispatch(CheckStart());
   axios({
-    url: 'https://10.188.8.29:5001/api/users/auth/GetUserRole',
+    url: 'users/auth/GetUserRole',
     method: 'GET',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
-    },
   })
     .then((res) => {
       const data = {
@@ -153,9 +125,8 @@ export const checkUser = () => (dispatch) => {
     })
     .catch((error) => {
       const { status } = error.request;
-      if (status === 0) dispatch(CheckFailure('Ошибка подключения к серверу'));
-      if (status === 401) dispatch(CheckFailure(''));
-      if (status !== 0 && status !== 401) dispatch(CheckFailure(error.request.response));
+      if (status === 401) dispatch(CheckFailure());
+      return error;
     });
 };
 

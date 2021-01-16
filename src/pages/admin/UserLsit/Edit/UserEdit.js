@@ -122,12 +122,12 @@ class UserEdit extends React.Component {
     return (
       <Box>
         <DialogContent className={classes.dialogBody}>
-          <TextField className={classes.field} value={this.state.data.userName} onChange={(e) => this.onChangeFields(e)} name="userName" label="Имя пользователя" />
-          <TextField className={classes.field} value={this.state.data.surname} onChange={(e) => this.onChangeFields(e)} name="surname" label="Фамилия" />
-          <TextField className={classes.field} value={this.state.data.name} onChange={(e) => this.onChangeFields(e)} name="name" label="Имя" />
-          <TextField className={classes.field} value={this.state.data.patronymic} onChange={(e) => this.onChangeFields(e)} name="patronymic" label="Отчество" />
-          <TextField className={classes.field} value={this.state.data.reportCard} onChange={(e) => this.onChangeFields(e)} name="reportCard" label="Студенческий" />
-          <TextField className={classes.field} value={this.state.data.email} onChange={(e) => this.onChangeFields(e)} name="email" label="Email" type="email" />
+          <TextField className={classes.field} value={this.state.data.userName || ''} onChange={(e) => this.onChangeFields(e)} name="userName" label="Имя пользователя" />
+          <TextField className={classes.field} value={this.state.data.surname || ''} onChange={(e) => this.onChangeFields(e)} name="surname" label="Фамилия" />
+          <TextField className={classes.field} value={this.state.data.name || ''} onChange={(e) => this.onChangeFields(e)} name="name" label="Имя" />
+          <TextField className={classes.field} value={this.state.data.patronymic || ''} onChange={(e) => this.onChangeFields(e)} name="patronymic" label="Отчество" />
+          <TextField className={classes.field} value={this.state.data.reportCard || ''} onChange={(e) => this.onChangeFields(e)} name="reportCard" label="Студенческий" />
+          <TextField className={classes.field} value={this.state.data.email || ''} onChange={(e) => this.onChangeFields(e)} name="email" label="Email" type="email" />
           <Autocomplete
             className={classes.field}
             id="roleSelect"

@@ -4,7 +4,7 @@ import {
 import { withSnackbar } from 'notistack';
 import React from 'react';
 import { connect } from 'react-redux';
-import { ClearAlertError, signIn } from './AuthSlice';
+import { signIn } from './AuthSlice';
 
 const styles = () => ({
   main: {
@@ -65,10 +65,6 @@ class SignInForm extends React.Component {
     } else if (this.props.auth.userData.isAuthorized === true) {
       window.location.assign('/');
     }
-    if (this.props.auth.error) {
-      const { enqueueSnackbar } = this.props;
-      enqueueSnackbar(this.props.auth.error, { variant: 'error', onClose: () => { this.props.clearAlertError(); } });
-    }
     return (
       <Box className={classes.main}>
         <Paper className={classes.signInForm}>
@@ -95,7 +91,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = () => (dispatch) => ({
   signIn: (username, password) => dispatch(signIn(username, password)),
-  clearAlertError: () => dispatch(ClearAlertError()),
 });
 
 export default withSnackbar(withStyles(styles)(connect(
