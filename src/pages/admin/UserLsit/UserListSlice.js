@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Axios from 'axios';
+import { ShowNotification } from '../../../modules/Alert/AlertSlice';
 
 export const UserListSlice = createSlice({
   name: 'userList',
@@ -10,8 +11,6 @@ export const UserListSlice = createSlice({
     userById: {},
     userByIdLoading: true,
     nextPage: 1,
-    error: '',
-    success: '',
     loading: true,
   },
   reducers: {
@@ -20,9 +19,8 @@ export const UserListSlice = createSlice({
       state.nextPage = JSON.parse(action.payload.headers['x-pagination']).Next;
       state.loading = false;
     },
-    GetUserListFailure: (state, action) => {
+    GetUserListFailure: (state) => {
       state.userListData = [];
-      state.error = action.payload;
       state.loading = true;
     },
     ClearUserList: (state) => {
@@ -31,16 +29,14 @@ export const UserListSlice = createSlice({
     GetRoleListSuccessful: (state, action) => {
       state.userRoleData = action.payload;
     },
-    GetRoleListFailure: (state, action) => {
+    GetRoleListFailure: (state) => {
       state.userRoleData = [];
-      state.error = action.payload;
     },
     GetGroupListSuccessful: (state, action) => {
       state.userGroupData = action.payload;
     },
-    GetGroupListFailure: (state, action) => {
+    GetGroupListFailure: (state) => {
       state.userGroupData = [];
-      state.error = action.payload;
     },
     GetUserByIdStart: (state) => {
       state.userById = {};
@@ -50,21 +46,8 @@ export const UserListSlice = createSlice({
       state.userById = action.payload;
       state.userByIdLoading = false;
     },
-    GetUserByIdFailure: (state, action) => {
-      state.error = action.payload;
+    GetUserByIdFailure: (state) => {
       state.userByIdLoading = true;
-    },
-    PutUserSuccessful: (state, action) => {
-      state.success = action.payload;
-    },
-    PutUserFailure: (state, action) => {
-      state.error = action.payload;
-    },
-    ClearAlertError: (state) => {
-      state.error = '';
-    },
-    ClearAlertSuccess: (state) => {
-      state.success = '';
     },
   },
 });
@@ -72,8 +55,7 @@ export const UserListSlice = createSlice({
 export const {
   GetUserListSuccessful, GetUserListFailure, ClearUserList, GetRoleListSuccessful,
   GetRoleListFailure, GetGroupListSuccessful, GetGroupListFailure, GetUserByIdStart,
-  GetUserByIdSuccessful, GetUserByIdFailure, PutUserSuccessful, PutUserFailure,
-  ClearAlertError, ClearAlertSuccess,
+  GetUserByIdSuccessful, GetUserByIdFailure,
 } = UserListSlice.actions;
 
 let oldText = '';
@@ -105,13 +87,8 @@ export const getUserList = (text, role, group, page, size) => (dispatch) => {
       }
     })
     .catch((error) => {
-      console.log(error);
-      const { status } = error.request;
-      let currentError;
-      if (status === 0) currentError = 'Ошибка подключения к серверу';
-      if (status === 401) window.location.assign(`/auth?redirectUrl=${window.location.href}`);
-      if (status >= 400 && status < 500) currentError = error.request.response;
-      dispatch(GetUserListFailure(currentError));
+      dispatch(GetUserListFailure());
+      return error;
     });
 };
 
@@ -128,12 +105,8 @@ export const getRoleList = () => (dispatch) => {
       dispatch(GetRoleListSuccessful(res.data));
     })
     .catch((error) => {
-      const { status } = error.request;
-      let currentError;
-      if (status === 0) currentError = 'Ошибка подключения к серверу';
-      if (status === 401) window.location.assign(`/auth?redirectUrl=${window.location.href}`);
-      if (status >= 400 && status < 500) currentError = error.request.response;
-      dispatch(GetUserListFailure(currentError));
+      dispatch(GetUserListFailure());
+      return error;
     });
 };
 
@@ -150,12 +123,8 @@ export const getGroupList = () => (dispatch) => {
       dispatch(GetGroupListSuccessful(res.data));
     })
     .catch((error) => {
-      const { status } = error.request;
-      let currentError;
-      if (status === 0) currentError = 'Ошибка подключения к серверу';
-      if (status === 401) window.location.assign(`/auth?redirectUrl=${window.location.href}`);
-      if (status >= 400 && status < 500) currentError = error.request.response;
-      dispatch(GetUserListFailure(currentError));
+      dispatch(GetUserListFailure());
+      return error;
     });
 };
 
@@ -172,12 +141,8 @@ export const getUserById = (id) => (dispatch) => {
       dispatch(GetUserByIdSuccessful(res.data));
     })
     .catch((error) => {
-      const { status } = error.request;
-      let currentError;
-      if (status === 0) currentError = 'Ошибка подключения к серверу';
-      if (status === 401) window.location.assign(`/auth?redirectUrl=${window.location.href}`);
-      if (status >= 400 && status < 500) currentError = error.request.response;
-      dispatch(GetUserByIdFailure(currentError));
+      dispatch(GetUserByIdFailure());
+      return error;
     });
 };
 
@@ -191,16 +156,9 @@ export const putChanges = (data) => (dispatch) => {
     },
   })
     .then((res) => {
-      if (res.request.status === 204) dispatch(PutUserSuccessful('Изменения сохранены'));
+      if (res.request.status === 204) dispatch(ShowNotification('Изменения сохранены', 'success'));
     })
-    .catch((error) => {
-      const { status } = error.request;
-      let currentError;
-      if (status === 0) currentError = 'Ошибка подключения к серверу';
-      if (status === 401) window.location.assign(`/auth?redirectUrl=${window.location.href}`);
-      if (status >= 400 && status < 500) currentError = error.request.response;
-      dispatch(PutUserFailure(currentError));
-    });
+    .catch((error) => error);
 };
 
 export default UserListSlice.reducer;

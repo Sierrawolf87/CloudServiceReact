@@ -4,12 +4,13 @@ import {
 } from '@material-ui/icons';
 import {
   AppBar, Button, Divider, Drawer, IconButton, List, ListItem, ListItemIcon,
-  ListItemText, MenuItem, Toolbar, Typography, Menu as UserMenu, Fade, withStyles,
+  ListItemText, MenuItem, Toolbar, Typography, Menu as UserMenu, Fade, withStyles, CircularProgress,
 } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { checkUser, signOut } from '../../pages/Auth/AuthSlice';
 import { RoleRoot, RoleStudent, RoleTeacher } from '../../pages/Auth/RoleList';
+import StyledLink from '../components/StyledLink/StyledLink';
 
 const style = (theme) => ({
   root: {
@@ -107,8 +108,17 @@ class TopAppBar extends React.Component {
         </div>
       );
     }
+
+    if (this.props.auth.userData.isAuthorized === false) {
+      return (
+        <StyledLink to={`/auth?redirectUrl=${window.location.href}`}>
+          <Button color="inherit">Войти</Button>
+        </StyledLink>
+      );
+    }
+
     return (
-      <Button color="inherit" onClick={() => window.location.assign(`/auth?redirectUrl=${window.location.href}`)}>Войти</Button>
+      <CircularProgress color="white" />
     );
   }
 
@@ -140,10 +150,12 @@ class TopAppBar extends React.Component {
             onKeyDown={toggleDrawer(false)}
           >
             <List>
-              <ListItem button onClick={() => window.location.assign('/admin/userlist')}>
-                <ListItemIcon><People /></ListItemIcon>
-                <ListItemText primary="Все пользователи" />
-              </ListItem>
+              <StyledLink to="/admin/userlist">
+                <ListItem button>
+                  <ListItemIcon><People /></ListItemIcon>
+                  <ListItemText primary="Все пользователи" />
+                </ListItem>
+              </StyledLink>
             </List>
             <Divider />
           </div>
@@ -220,9 +232,11 @@ class TopAppBar extends React.Component {
             <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
               <Menu />
             </IconButton>
-            <Typography variant="h6" className={classes.title} onClick={() => window.location.assign('/')}>
-              Cloud Service
-            </Typography>
+            <StyledLink className={classes.title} to="/">
+              <Typography variant="h6" className={classes.title}>
+                Cloud Service
+              </Typography>
+            </StyledLink>
             {this.buttonOrMenu()}
           </Toolbar>
         </AppBar>

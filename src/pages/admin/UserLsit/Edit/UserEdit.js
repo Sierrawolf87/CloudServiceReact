@@ -6,7 +6,7 @@ import { Autocomplete } from '@material-ui/lab';
 import React from 'react';
 import { connect } from 'react-redux';
 import { withSnackbar } from 'notistack';
-import { ClearAlertError, ClearAlertSuccess, putChanges } from '../UserListSlice';
+import { putChanges } from '../UserListSlice';
 
 const styles = () => ({
   dialogBody: {
@@ -182,14 +182,6 @@ class UserEdit extends React.Component {
   }
 
   render() {
-    if (this.props.userList.error) {
-      const { enqueueSnackbar } = this.props;
-      enqueueSnackbar(this.props.userList.error, { variant: 'error', onClose: () => { this.props.clearAlertError(); } });
-    }
-    if (this.props.userList.success) {
-      const { enqueueSnackbar } = this.props;
-      enqueueSnackbar(this.props.userList.success, { variant: 'success', onClose: () => { this.props.clearAlertSuccess(); } });
-    }
     const { isOpen } = this.props;
     return (
       <Dialog open={isOpen} onClose={() => this.cancel()} aria-labelledby="form-dialog-title">
@@ -207,8 +199,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = () => (dispatch) => ({
   putChanges: (data) => dispatch(putChanges(data)),
-  clearAlertError: () => dispatch(ClearAlertError()),
-  clearAlertSuccess: () => dispatch(ClearAlertSuccess()),
 });
 
 export default withSnackbar(withStyles(styles)(connect(

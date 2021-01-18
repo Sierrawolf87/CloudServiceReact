@@ -80,8 +80,8 @@ function App() {
       >
         <Box>
           <Notifier />
-          <TopAppBar />
           <BrowserRouter>
+            <Route component={TopAppBar} />
             <Switch>
               <Route exact path="/" component={Root} />
               <Route exact path="/auth" component={SignInForm} />

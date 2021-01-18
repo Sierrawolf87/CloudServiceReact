@@ -4,7 +4,7 @@ import { withSnackbar } from 'notistack';
 import React from 'react';
 import { connect } from 'react-redux';
 import { CSCard, CSCardSkeleton } from '../../../modules/components/CSCard/CSCard';
-import { ClearAlertError, getUserById, getUserList } from './UserListSlice';
+import { getUserById, getUserList } from './UserListSlice';
 
 const styles = () => ({
   userList: {
@@ -45,10 +45,6 @@ class UserListComponent extends React.Component {
         icon: <Delete />,
       },
     ];
-    if (this.props.userList.error) {
-      const { enqueueSnackbar } = this.props;
-      enqueueSnackbar(this.props.userList.error, { variant: 'error', onClose: () => { this.props.clearAlertError(); } });
-    }
     if (this.props.userList.loading === false) {
       return (
         <Box className={classes.userList} onScroll={(e) => this.windowScroll(e)}>
@@ -95,7 +91,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = () => (dispatch) => ({
   getUserList: (page, size) => dispatch(getUserList(null, null, null, page, size)),
   getUserById: (id) => dispatch(getUserById(id)),
-  clearAlertError: () => dispatch(ClearAlertError()),
 });
 
 export default withSnackbar(withStyles(styles)(connect(

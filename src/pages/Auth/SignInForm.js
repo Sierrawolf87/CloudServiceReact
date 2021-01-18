@@ -4,6 +4,7 @@ import {
 import { withSnackbar } from 'notistack';
 import React from 'react';
 import { connect } from 'react-redux';
+import StyledLink from '../../modules/components/StyledLink/StyledLink';
 import { signIn } from './AuthSlice';
 
 const styles = () => ({
@@ -76,7 +77,9 @@ class SignInForm extends React.Component {
           <TextField id="authusername" label="Логин" variant="outlined" name="login" autoComplete="off" onChange={(event) => this.OnChangeInputs(event)} value={this.state.login} />
           <TextField id="authpassword" type="password" label="Пароль" variant="outlined" name="password" onChange={(event) => this.OnChangeInputs(event)} value={this.state.password} />
           <Box className={classes.ButtonDivAuth}>
-            <Button onClick={() => this.props.history.push(`/auth/ForgotPassword?redirectUrl=${redirect}`)}> Забыли пароль? </Button>
+            <StyledLink to={`/auth/ForgotPassword?redirectUrl=${redirect}`}>
+              <Button> Забыли пароль? </Button>
+            </StyledLink>
             <Button variant="contained" color="primary" onClick={() => this.props.signIn(this.state.login, this.state.password)}> Войти </Button>
           </Box>
         </Paper>
