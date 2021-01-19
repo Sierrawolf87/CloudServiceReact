@@ -7,6 +7,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { withSnackbar } from 'notistack';
 import { putChanges } from '../UserListSlice';
+import { ShowNotification } from '../../../../modules/Alert/AlertSlice';
 
 const styles = () => ({
   dialogBody: {
@@ -37,6 +38,10 @@ class UserEdit extends React.Component {
         email: '',
       },
     };
+  }
+
+  componentDidUpdate() {
+    this.onOpen();
   }
 
   // За это немного стыдно
@@ -77,13 +82,11 @@ class UserEdit extends React.Component {
         [e.target.name]: e.target.value,
       },
     }));
-    console.log(this.state);
   }
 
   cancel() {
-    const { enqueueSnackbar } = this.props;
     this.props.close('userEditOpen');
-    enqueueSnackbar('Изменения не сохранены', { variant: 'info' });
+    this.props.showNotification('Изменения не сохранены', 'info');
     this.setState({
       dataInState: false,
       loading: true,
@@ -186,7 +189,6 @@ class UserEdit extends React.Component {
     return (
       <Dialog open={isOpen} onClose={() => this.cancel()} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">Редактирование</DialogTitle>
-        {this.onOpen()}
         {this.renderDialogBody()}
       </Dialog>
     );
@@ -199,6 +201,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = () => (dispatch) => ({
   putChanges: (data) => dispatch(putChanges(data)),
+  showNotification: (message, variant, option, action) => dispatch(ShowNotification(message, variant, option, action)),
 });
 
 export default withSnackbar(withStyles(styles)(connect(

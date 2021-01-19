@@ -49,13 +49,28 @@ export const UserListSlice = createSlice({
     GetUserByIdFailure: (state) => {
       state.userByIdLoading = true;
     },
+    PutSuccessful: (state, action) => {
+      const find = state.userListData.find((item) => item.id === action.payload.id);
+      find.userName = action.payload.userName;
+      find.surname = action.payload.surname;
+      find.name = action.payload.name;
+      find.patronymic = action.payload.patronymic;
+      find.reportCard = action.payload.reportCard;
+      find.email = action.payload.email;
+    },
+    DeleteSuccesful: (state, action) => {
+      const index = state.userListData.findIndex((item) => item.id === action.payload.id);
+      if (index > -1) {
+        state.userListData.splice(index, 1);
+      }
+    },
   },
 });
 
 export const {
   GetUserListSuccessful, GetUserListFailure, ClearUserList, GetRoleListSuccessful,
   GetRoleListFailure, GetGroupListSuccessful, GetGroupListFailure, GetUserByIdStart,
-  GetUserByIdSuccessful, GetUserByIdFailure,
+  GetUserByIdSuccessful, GetUserByIdFailure, PutSuccessful, DeleteSuccesful,
 } = UserListSlice.actions;
 
 let oldText = '';
@@ -77,9 +92,6 @@ export const getUserList = (text, role, group, page, size) => (dispatch) => {
       size,
     },
     method: 'GET',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
-    },
   })
     .then((res) => {
       if (res.status !== 204) {
@@ -96,9 +108,6 @@ export const getRoleList = () => (dispatch) => {
   Axios({
     url: 'roles',
     method: 'GET',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
-    },
   })
     .then((res) => {
       res.data.unshift({ id: '', name: 'Все' });
@@ -114,9 +123,6 @@ export const getGroupList = () => (dispatch) => {
   Axios({
     url: 'groups',
     method: 'GET',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
-    },
   })
     .then((res) => {
       res.data.unshift({ id: '', name: 'Все' });
@@ -133,9 +139,6 @@ export const getUserById = (id) => (dispatch) => {
   Axios({
     url: `users/${id}`,
     method: 'GET',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
-    },
   })
     .then((res) => {
       dispatch(GetUserByIdSuccessful(res.data));
@@ -151,12 +154,22 @@ export const putChanges = (data) => (dispatch) => {
     url: `users/${data.id}`,
     method: 'PUT',
     data,
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('TOKEN')}`,
-    },
   })
     .then((res) => {
-      if (res.request.status === 204) dispatch(ShowNotification('Изменения сохранены', 'success'));
+      dispatch(ShowNotification('Изменения сохранены', 'success'));
+      dispatch(PutSuccessful(res.data));
+    })
+    .catch((error) => error);
+};
+
+export const deleteUser = (id) => (dispatch) => {
+  Axios({
+    url: `users/${id}`,
+    method: 'DELETE',
+  })
+    .then((res) => {
+      dispatch(ShowNotification('Пользователь удалён', 'success'));
+      dispatch(DeleteSuccesful(res.data));
     })
     .catch((error) => error);
 };

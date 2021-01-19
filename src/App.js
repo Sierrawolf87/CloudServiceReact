@@ -17,7 +17,7 @@ import UserList from './pages/admin/UserLsit/UserList';
 import PrivateRoute from './PrivateRoute';
 import TopAppBar from './modules/TopAppBar/TopAppBar';
 import DisciplineList from './pages/admin/DisciplineList/DisciplineList';
-import Notifier from './modules/Alert/Alert';
+import Notifier from './modules/Alert/Notifier';
 import { ShowNotification } from './modules/Alert/AlertSlice';
 import store from './app/store';
 

@@ -36,12 +36,15 @@ class UserListComponent extends React.Component {
       {
         actionOnClick: (id) => {
           this.props.getUserById(id);
-          this.props.onOpenDialog('userEditOpen', id);
+          this.props.onOpenDialog('userEditOpen');
         },
         icon: <Edit />,
       },
       {
-        actionOnClick: () => { },
+        actionOnClick: (id) => {
+          this.props.getUserById(id);
+          this.props.onOpenDialog('userDeleteOpen');
+        },
         icon: <Delete />,
       },
     ];
