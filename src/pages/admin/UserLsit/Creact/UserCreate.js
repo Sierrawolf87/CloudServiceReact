@@ -6,7 +6,7 @@ import { Autocomplete } from '@material-ui/lab';
 import React from 'react';
 import { connect } from 'react-redux';
 import { withSnackbar } from 'notistack';
-import { putChanges } from '../UserListSlice';
+import { createUser } from '../UserListSlice';
 import { ShowNotification } from '../../../../modules/Alert/AlertSlice';
 
 const styles = () => ({
@@ -22,57 +22,23 @@ const styles = () => ({
   },
 });
 
-class UserEdit extends React.Component {
+class UserCreate extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dataInState: false,
-      loading: true,
       data: {
-        id: '',
-        userName: '',
         surname: '',
         name: '',
         patronymic: '',
         reportCard: '',
-        email: '',
+        role: {
+          id: '',
+        },
+        group: {
+          id: '',
+        },
       },
     };
-  }
-
-  componentDidUpdate() {
-    this.onOpen();
-  }
-
-  // За это немного стыдно
-  // Метод заносит новые данные, полученные из redux
-  // в state компонента, чтобы мы могли их изменять.
-  onOpen() {
-    const { isOpen } = this.props;
-    if (isOpen) {
-      const { userById, userByIdLoading } = this.props.userList;
-      if (!userByIdLoading && !this.state.dataInState) {
-        this.setState({
-          dataInState: true,
-          loading: false,
-          data: {
-            id: userById.id,
-            userName: userById.userName,
-            surname: userById.surname,
-            name: userById.name,
-            patronymic: userById.patronymic,
-            reportCard: userById.reportCard,
-            email: userById.email,
-            role: {
-              id: userById.role.id,
-            },
-            group: {
-              id: userById.group.id,
-            },
-          },
-        });
-      }
-    }
   }
 
   onChangeFields(e) {
@@ -84,27 +50,38 @@ class UserEdit extends React.Component {
     }));
   }
 
-  cancel() {
-    this.props.close('userEditOpen');
-    this.props.showNotification('Изменения не сохранены', 'info');
+  clearState() {
     this.setState({
-      dataInState: false,
-      loading: true,
+      data: {
+        surname: '',
+        name: '',
+        patronymic: '',
+        reportCard: '',
+        role: {
+          id: '',
+        },
+        group: {
+          id: '',
+        },
+      },
     });
   }
 
+  cancel() {
+    this.props.close('userCreateOpen');
+    this.props.showNotification('Изменения не сохранены', 'info');
+    this.clearState();
+  }
+
   save() {
-    this.props.putChanges(this.state.data);
-    this.props.close('userEditOpen');
-    this.setState({
-      dataInState: false,
-      loading: true,
-    });
+    this.props.createUser(this.state.data);
+    this.props.close('userCreateOpen');
+    this.clearState();
   }
 
   renderDialogBody() {
     const { classes } = this.props;
-    if (this.state.loading) {
+    if (this.props.userList.userRoleData === [] || this.props.userList.userGroupData === []) {
       return (
         <Box>
           <Box width="100%" height="150px" display="flex" justifyContent="center" alignItems="center">
@@ -119,18 +96,16 @@ class UserEdit extends React.Component {
       );
     }
 
-    const defaultRole = this.props.userList.userRoleData.find((item) => item.id === this.state.data.role.id);
-    const defaultGroup = this.props.userList.userGroupData.find((item) => item.id === this.state.data.group.id);
+    const defaultRole = this.props.userList.userRoleData.find((item) => item.name === 'student');
+    const defaultGroup = this.props.userList.userGroupData[0];
 
     return (
       <Box>
         <DialogContent className={classes.dialogBody}>
-          <TextField className={classes.field} value={this.state.data.userName || ''} onChange={(e) => this.onChangeFields(e)} name="userName" label="Имя пользователя" />
           <TextField className={classes.field} value={this.state.data.surname || ''} onChange={(e) => this.onChangeFields(e)} name="surname" label="Фамилия" />
           <TextField className={classes.field} value={this.state.data.name || ''} onChange={(e) => this.onChangeFields(e)} name="name" label="Имя" />
           <TextField className={classes.field} value={this.state.data.patronymic || ''} onChange={(e) => this.onChangeFields(e)} name="patronymic" label="Отчество" />
           <TextField className={classes.field} value={this.state.data.reportCard || ''} onChange={(e) => this.onChangeFields(e)} name="reportCard" label="Студенческий" />
-          <TextField className={classes.field} value={this.state.data.email || ''} onChange={(e) => this.onChangeFields(e)} name="email" label="Email" type="email" />
           <Autocomplete
             className={classes.field}
             id="roleSelect"
@@ -177,7 +152,7 @@ class UserEdit extends React.Component {
             Отмена
           </Button>
           <Button onClick={() => this.save()} color="primary">
-            Сохранить
+            Создать
           </Button>
         </DialogActions>
       </Box>
@@ -200,11 +175,11 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = () => (dispatch) => ({
-  putChanges: (data) => dispatch(putChanges(data)),
+  createUser: (data) => dispatch(createUser(data)),
   showNotification: (message, variant, option, action) => dispatch(ShowNotification(message, variant, option, action)),
 });
 
 export default withSnackbar(withStyles(styles)(connect(
   mapStateToProps,
   mapDispatchToProps,
-)(UserEdit)));
+)(UserCreate)));

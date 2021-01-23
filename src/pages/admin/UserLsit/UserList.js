@@ -1,12 +1,14 @@
 /* eslint-disable react/prefer-stateless-function */
-import { Box, withStyles } from '@material-ui/core';
+import { Box, Fab, withStyles } from '@material-ui/core';
+import { Add } from '@material-ui/icons';
 import React from 'react';
+import UserCreate from './Creact/UserCreate';
 import UserDelete from './Delete/UserDelete';
 import UserEdit from './Edit/UserEdit';
 import UserListComponent from './UserListComponent';
 import UserListFilterComponent from './UserListFilterComponent';
 
-const style = () => ({
+const style = (theme) => ({
   root: {
     display: 'flex',
     justifyContent: 'center',
@@ -14,12 +16,22 @@ const style = () => ({
     alignItems: 'center',
     maxHeight: `calc(100vh - ${document.getElementsByTagName('header')[0].clientHeight}px)`,
   },
+  fabMargin: {
+    position: 'absolute',
+    right: '20px',
+    bottom: '20px',
+    margin: theme.spacing(1),
+  },
+  fabExtendedIcon: {
+    marginRight: theme.spacing(1),
+  },
 });
 
 class UserList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      userCreateOpen: false,
       userEditOpen: false,
       userDeleteOpen: false,
     };
@@ -43,6 +55,10 @@ class UserList extends React.Component {
       <Box className={classes.root}>
         <UserListFilterComponent />
         <UserListComponent onOpenDialog={(field) => this.onOpenDialog(field)} />
+        <UserCreate
+          isOpen={this.state.userCreateOpen}
+          close={(field) => this.onCloseDialog(field)}
+        />
         <UserEdit
           isOpen={this.state.userEditOpen}
           close={(field) => this.onCloseDialog(field)}
@@ -51,6 +67,17 @@ class UserList extends React.Component {
           isOpen={this.state.userDeleteOpen}
           close={(field) => this.onCloseDialog(field)}
         />
+        <Fab
+          variant="extended"
+          size="large"
+          color="primary"
+          aria-label="create"
+          className={classes.fabMargin}
+          onClick={() => this.onOpenDialog('userCreateOpen')}
+        >
+          <Add className={classes.fabExtendedIcon} />
+          Создать
+        </Fab>
       </Box>
     );
   }

@@ -49,6 +49,9 @@ export const UserListSlice = createSlice({
     GetUserByIdFailure: (state) => {
       state.userByIdLoading = true;
     },
+    CreateSuccessful: (state, action) => {
+      state.userListData.push(action.payload);
+    },
     PutSuccessful: (state, action) => {
       const find = state.userListData.find((item) => item.id === action.payload.id);
       find.userName = action.payload.userName;
@@ -70,7 +73,8 @@ export const UserListSlice = createSlice({
 export const {
   GetUserListSuccessful, GetUserListFailure, ClearUserList, GetRoleListSuccessful,
   GetRoleListFailure, GetGroupListSuccessful, GetGroupListFailure, GetUserByIdStart,
-  GetUserByIdSuccessful, GetUserByIdFailure, PutSuccessful, DeleteSuccesful,
+  GetUserByIdSuccessful, GetUserByIdFailure, CreateSuccessful, PutSuccessful,
+  DeleteSuccesful,
 } = UserListSlice.actions;
 
 let oldText = '';
@@ -147,6 +151,20 @@ export const getUserById = (id) => (dispatch) => {
       dispatch(GetUserByIdFailure());
       return error;
     });
+};
+
+export const createUser = (data) => (dispatch) => {
+  console.log(data);
+  Axios({
+    url: 'users/auth/signUp',
+    method: 'POST',
+    data,
+  })
+    .then((res) => {
+      dispatch(ShowNotification('Пользователь создан', 'success'));
+      dispatch(CreateSuccessful(res.data));
+    })
+    .catch((error) => error);
 };
 
 export const putChanges = (data) => (dispatch) => {
