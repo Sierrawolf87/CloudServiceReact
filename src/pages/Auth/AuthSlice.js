@@ -124,8 +124,10 @@ export const checkUser = () => (dispatch) => {
       dispatch(CheckSuccessful(data));
     })
     .catch((error) => {
-      const { status } = error.request;
-      if (status === 401) dispatch(CheckFailure());
+      if (error.request) {
+        const { status } = error.request;
+        if (status === 401) dispatch(CheckFailure());
+      }
       return error;
     });
 };

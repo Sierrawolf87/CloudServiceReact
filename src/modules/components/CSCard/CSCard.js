@@ -23,8 +23,9 @@ const useStyles = makeStyles({
 
 export function CSCard(props) {
   const classes = useStyles();
+  const buttons = props.buttons || [];
   return (
-    <Card className={classes.root} key>
+    <Card className={classes.root} key={props.key}>
       <CardContent>
         <Typography className={classes.title} color="textSecondary" gutterBottom>
           {props.header}
@@ -40,7 +41,7 @@ export function CSCard(props) {
         </Typography>
       </CardContent>
       <CardActions>
-        {props.buttons.map((item) => (
+        {buttons.map((item) => (
           <IconButton key={new Date().getTime() + Math.random()} size="medium" onClick={() => { item.actionOnClick(props.id); }}>
             {item.icon}
           </IconButton>

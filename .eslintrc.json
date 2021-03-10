@@ -19,14 +19,14 @@
         "react"
     ],
     "rules": {
-        "linebreak-style": ["error", "windows"],
-        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-        "react/destructuring-assignment": "off",
-        "react/prop-types": "off",
-        "no-param-reassign": "off",
-        "no-console": "off",
-        "no-debugger": "off",
-        "max-len": "off",
-        "react/jsx-props-no-spreading": "off"
+        "linebreak-style": ["error", "windows"], //проверка отсутпов под винду
+        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }], //отключает требование обязатлеьного выноса jsx в отдельный файл
+        "react/destructuring-assignment": "off", //отключает обязательную деструктиризацию
+        "react/prop-types": "off", //отключает прототайпсы 
+        "no-param-reassign": "off", //отключает ошибки при при изменении входящих параметров
+        "no-console": "off", //отключает запрет на console.log()
+        "no-debugger": "off", //отключает запрет debugger
+        "max-len": "off", //отлючает проверку максмальной длинны строки
+        "react/jsx-props-no-spreading": "off" //отключает запрет на троеточие, к примеру {...props}
     }
 }

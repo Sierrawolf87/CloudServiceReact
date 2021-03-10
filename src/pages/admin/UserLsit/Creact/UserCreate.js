@@ -163,7 +163,7 @@ class UserCreate extends React.Component {
     const { isOpen } = this.props;
     return (
       <Dialog open={isOpen} onClose={() => this.cancel()} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Редактирование</DialogTitle>
+        <DialogTitle id="form-dialog-title">Создание</DialogTitle>
         {this.renderDialogBody()}
       </Dialog>
     );

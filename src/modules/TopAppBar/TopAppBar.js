@@ -44,7 +44,7 @@ class TopAppBar extends React.Component {
     if (
       !(window.location.pathname === '/auth'
       || window.location.pathname === '/auth/ForgotPassword'
-      || window.location.pathname === '/auth/ResetPassword')
+      || window.location.pathname.includes('/auth/ResetPassword'))
     ) {
       this.props.checkUser();
     }
@@ -54,7 +54,7 @@ class TopAppBar extends React.Component {
     if (
       window.location.pathname === '/auth'
       || window.location.pathname === '/auth/ForgotPassword'
-      || window.location.pathname === '/auth/ResetPassword'
+      || window.location.pathname.includes('/auth/ResetPassword')
     ) {
       return (<div />);
     }
@@ -192,6 +192,12 @@ class TopAppBar extends React.Component {
                 <ListItemIcon><Mail /></ListItemIcon>
                 <ListItemText primary="Тест для student" />
               </ListItem>
+              <StyledLink to="/discipline/laboratory/92EA0759-A44B-47F1-8076-08D8A5B3E31C">
+                <ListItem button>
+                  <ListItemIcon><Mail /></ListItemIcon>
+                  <ListItemText primary="Загрузить файлы" />
+                </ListItem>
+              </StyledLink>
             </List>
             <Divider />
           </div>

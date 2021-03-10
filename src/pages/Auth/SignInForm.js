@@ -4,6 +4,7 @@ import {
 import { withSnackbar } from 'notistack';
 import React from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import StyledLink from '../../modules/components/StyledLink/StyledLink';
 import { signIn } from './AuthSlice';
 
@@ -64,7 +65,7 @@ class SignInForm extends React.Component {
     if (this.props.auth.userData.isAuthorized && redirect !== '' && redirect !== null) {
       window.location.replace(redirect);
     } else if (this.props.auth.userData.isAuthorized === true) {
-      window.location.assign('/');
+      return (<Redirect to="/" />);
     }
     return (
       <Box className={classes.main}>

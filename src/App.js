@@ -1,6 +1,8 @@
 import React from 'react';
 import './App.css';
-import { Route, Switch, BrowserRouter } from 'react-router-dom';
+import {
+  Route, Switch, BrowserRouter,
+} from 'react-router-dom';
 import {
   Box,
   createMuiTheme, IconButton, ThemeProvider, useMediaQuery,
@@ -20,8 +22,11 @@ import DisciplineList from './pages/admin/DisciplineList/DisciplineList';
 import Notifier from './modules/Alert/Notifier';
 import { ShowNotification } from './modules/Alert/AlertSlice';
 import store from './app/store';
+import LaboratoryListStudent from './pages/discipline/laboratory/LaboratoryListStudent';
+import LaboratoryStudent from './pages/discipline/laboratory/LaboratoryStudent';
 
-axios.defaults.baseURL = 'https://10.188.8.29:5001/api/';
+axios.defaults.baseURL = 'https://localhost:5001/api/';
+// axios.defaults.baseURL = 'https://arreis.ru:2500/api/';
 
 axios.interceptors.request.use(
   (request) => {
@@ -39,7 +44,8 @@ axios.interceptors.response.use(
     if (error.request) {
       const { status } = error.request;
       if (status === 0) store.dispatch(ShowNotification('Ошибка подключения к серверу', 'error'));
-      if (status === 401 && window.location.pathname !== '/') window.location.assign(`/auth?redirectUrl=${window.location.href}`);
+      if (status === 401 && window.location.pathname !== '/') window.reload();
+      // if (status === 401 && window.location.pathname !== '/') return (<Redirect to={`/auth?redirectUrl=${window.location.href}`} />);
       if (status >= 400 && status < 500) store.dispatch(ShowNotification(error.request.response, 'error'));
     }
     return Promise.reject(error);
@@ -80,7 +86,7 @@ function App() {
       >
         <Box>
           <Notifier />
-          <BrowserRouter>
+          <BrowserRouter basename="/cloudservice">
             <Route component={TopAppBar} />
             <Switch>
               <Route exact path="/" component={Root} />
@@ -89,6 +95,8 @@ function App() {
               <Route exact path="/auth/ResetPassword/:code" component={ResetPasswordForm} />
               <PrivateRoute exact path="/admin/userlist" userRole="root" component={UserList} />
               <PrivateRoute exact path="/admin/DisciplineList" userRole="root" component={DisciplineList} />
+              <PrivateRoute exact path="/discipline/:id" userRole="student" component={LaboratoryListStudent} />
+              <PrivateRoute exact path="/student/discipline/laboratory/:id" userRole="student" component={LaboratoryStudent} />
             </Switch>
           </BrowserRouter>
         </Box>

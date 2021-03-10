@@ -3,6 +3,7 @@ import AlertReducer from '../modules/Alert/AlertSlice';
 import DisciplineListReduser from '../pages/admin/DisciplineList/DisciplineListSlice';
 import UserListReduser from '../pages/admin/UserLsit/UserListSlice';
 import AuthReduser from '../pages/Auth/AuthSlice';
+import LaboratoryReducer from '../pages/discipline/laboratory/LaboratorySlice';
 
 export default configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export default configureStore({
     auth: AuthReduser,
     userList: UserListReduser,
     disciplineList: DisciplineListReduser,
+    laboratory: LaboratoryReducer,
   },
 });

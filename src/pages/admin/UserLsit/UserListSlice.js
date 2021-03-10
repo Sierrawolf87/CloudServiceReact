@@ -154,7 +154,6 @@ export const getUserById = (id) => (dispatch) => {
 };
 
 export const createUser = (data) => (dispatch) => {
-  console.log(data);
   Axios({
     url: 'users/auth/signUp',
     method: 'POST',
