@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  AccountCircle, Mail, Menu, People,
+  AccountCircle, Dashboard, Mail, Menu, People,
 } from '@material-ui/icons';
 import {
   AppBar, Button, Divider, Drawer, IconButton, List, ListItem, ListItemIcon,
@@ -41,21 +41,13 @@ class TopAppBar extends React.Component {
   }
 
   componentDidMount() {
-    if (
-      !(window.location.pathname === '/auth'
-      || window.location.pathname === '/auth/ForgotPassword'
-      || window.location.pathname.includes('/auth/ResetPassword'))
-    ) {
+    if (!window.location.pathname.includes('/auth')) {
       this.props.checkUser();
     }
   }
 
   buttonOrMenu() {
-    if (
-      window.location.pathname === '/auth'
-      || window.location.pathname === '/auth/ForgotPassword'
-      || window.location.pathname.includes('/auth/ResetPassword')
-    ) {
+    if (window.location.pathname.includes('/auth')) {
       return (<div />);
     }
 
@@ -170,10 +162,12 @@ class TopAppBar extends React.Component {
             onKeyDown={toggleDrawer(false)}
           >
             <List>
-              <ListItem button>
-                <ListItemIcon><Mail /></ListItemIcon>
-                <ListItemText primary="Тест для teacher" />
-              </ListItem>
+              <StyledLink to="/teacher/discipline/">
+                <ListItem button>
+                  <ListItemIcon><Dashboard /></ListItemIcon>
+                  <ListItemText primary="Список дисциплин" />
+                </ListItem>
+              </StyledLink>
             </List>
             <Divider />
           </div>
@@ -188,14 +182,10 @@ class TopAppBar extends React.Component {
             onKeyDown={toggleDrawer(false)}
           >
             <List>
-              <ListItem button>
-                <ListItemIcon><Mail /></ListItemIcon>
-                <ListItemText primary="Тест для student" />
-              </ListItem>
-              <StyledLink to="/discipline/laboratory/92EA0759-A44B-47F1-8076-08D8A5B3E31C">
+              <StyledLink to="/student/discipline">
                 <ListItem button>
-                  <ListItemIcon><Mail /></ListItemIcon>
-                  <ListItemText primary="Загрузить файлы" />
+                  <ListItemIcon><Dashboard /></ListItemIcon>
+                  <ListItemText primary="Список дисциплин" />
                 </ListItem>
               </StyledLink>
             </List>

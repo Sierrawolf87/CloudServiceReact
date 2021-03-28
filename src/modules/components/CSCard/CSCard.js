@@ -25,15 +25,15 @@ export function CSCard(props) {
   const classes = useStyles();
   const buttons = props.buttons || [];
   return (
-    <Card className={classes.root} key={props.key}>
+    <Card className={`${classes.root} ${[props.className]}`} key={props.key} onClick={props.onClick}>
       <CardContent>
-        <Typography className={classes.title} color="textSecondary" gutterBottom>
+        <Typography className={classes.title} gutterBottom>
           {props.header}
         </Typography>
         <Typography variant="h5" component="h2">
           {props.title}
         </Typography>
-        <Typography className={classes.pos} color="textSecondary">
+        <Typography className={classes.pos}>
           {props.signature}
         </Typography>
         <Typography variant="body2" component="p">

@@ -11,6 +11,7 @@ import { SnackbarProvider } from 'notistack';
 import { Close } from '@material-ui/icons';
 
 import axios from 'axios';
+import { pink, teal } from '@material-ui/core/colors';
 import Root from './pages/Root/root';
 import SignInForm from './pages/Auth/SignInForm';
 import ForgotPasswordForm from './pages/Auth/ForgotPasswordForm';
@@ -24,6 +25,10 @@ import { ShowNotification } from './modules/Alert/AlertSlice';
 import store from './app/store';
 import LaboratoryListStudent from './pages/discipline/laboratory/LaboratoryListStudent';
 import LaboratoryStudent from './pages/discipline/laboratory/LaboratoryStudent';
+import DisciplineListStudent from './pages/discipline/DisciplineListStudent';
+import DisciplineListTeacher from './pages/discipline/DisciplineListTeacher';
+import LaboratoryListTeacher from './pages/discipline/laboratory/LaboratoryListTeacher';
+import LaboratoryTeacher from './pages/discipline/laboratory/LaboratoryTeacher';
 
 axios.defaults.baseURL = 'https://localhost:5001/api/';
 // axios.defaults.baseURL = 'https://arreis.ru:2500/api/';
@@ -58,6 +63,8 @@ function App() {
   const theme = createMuiTheme({
     palette: {
       type: darkTheme ? 'dark' : 'light',
+      primary: teal,
+      secondary: pink,
     },
   });
 
@@ -95,8 +102,12 @@ function App() {
               <Route exact path="/auth/ResetPassword/:code" component={ResetPasswordForm} />
               <PrivateRoute exact path="/admin/userlist" userRole="root" component={UserList} />
               <PrivateRoute exact path="/admin/DisciplineList" userRole="root" component={DisciplineList} />
-              <PrivateRoute exact path="/discipline/:id" userRole="student" component={LaboratoryListStudent} />
+              <PrivateRoute exact path="/student/discipline/" userRole="student" component={DisciplineListStudent} />
+              <PrivateRoute exact path="/student/discipline/:id" userRole="student" component={LaboratoryListStudent} />
               <PrivateRoute exact path="/student/discipline/laboratory/:id" userRole="student" component={LaboratoryStudent} />
+              <PrivateRoute exact path="/teacher/discipline/" userRole="teacher" component={DisciplineListTeacher} />
+              <PrivateRoute exact path="/teacher/discipline/:id" userRole="teacher" component={LaboratoryListTeacher} />
+              <PrivateRoute exact path="/teacher/discipline/laboratory/:id" userRole="teacher" component={LaboratoryTeacher} />
             </Switch>
           </BrowserRouter>
         </Box>

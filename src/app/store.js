@@ -4,6 +4,7 @@ import DisciplineListReduser from '../pages/admin/DisciplineList/DisciplineListS
 import UserListReduser from '../pages/admin/UserLsit/UserListSlice';
 import AuthReduser from '../pages/Auth/AuthSlice';
 import LaboratoryReducer from '../pages/discipline/laboratory/LaboratorySlice';
+import DisciplineReducer from '../pages/discipline/DisciplineSliсe';
 
 export default configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export default configureStore({
     userList: UserListReduser,
     disciplineList: DisciplineListReduser,
     laboratory: LaboratoryReducer,
+    discipline: DisciplineReducer,
   },
 });

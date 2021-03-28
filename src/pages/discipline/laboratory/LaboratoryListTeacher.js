@@ -1,15 +1,14 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import {
-  Box, CircularProgress, TextField, withStyles,
+  Box, CircularProgress, Fab, TextField, withStyles,
 } from '@material-ui/core';
+import { Add } from '@material-ui/icons';
 import { withSnackbar } from 'notistack';
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-  getStudentLaboratoryList, SetSearchText,
-} from './LaboratorySlice';
 import { CSCard } from '../../../modules/components/CSCard/CSCard';
 import StyledLink from '../../../modules/components/StyledLink/StyledLink';
+import { getTeacherLaboratoryList, SetSearchText } from './LaboratorySlice';
 
 const style = (theme) => ({
   root: {
@@ -45,32 +44,18 @@ const style = (theme) => ({
   labCard: {
     cursor: 'pointer',
   },
-  error: {
-    backgroundColor: theme.palette.error.main,
-    color: theme.palette.error.contrastText,
-  },
-  warning: {
-    backgroundColor: theme.palette.warning.main,
-    color: theme.palette.warning.contrastText,
-  },
-  success: {
-    backgroundColor: theme.palette.success.main,
-    color: theme.palette.success.contrastText,
+  fabMargin: {
+    position: 'absolute',
+    right: '20px',
+    bottom: '20px',
+    margin: theme.spacing(1),
   },
 });
 
 // eslint-disable-next-line react/prefer-stateless-function
-class LaboratoryListStudent extends React.Component {
+class LaboratoryListTeacher extends React.Component {
   componentDidMount() {
-    this.props.getStudentLaboratoryList(this.props.match.params.id);
-  }
-
-  getCsCardColorClass(mark) {
-    const { classes } = this.props;
-    if (mark <= 3) { return classes.error; }
-    if (mark <= 7) { return classes.warning; }
-    if (mark <= 10) { return classes.success; }
-    return classes.error;
+    this.props.getTeacherLaboratoryList(this.props.match.params.id);
   }
 
   getLabList() {
@@ -79,14 +64,14 @@ class LaboratoryListStudent extends React.Component {
       return (
         <Box className={classes.rootBlock}>
           {laboratory.studentLaboratoryList.map((item) => (
-            <StyledLink to={`/student/discipline/laboratory/${item.laboratory.id}`}>
+            <StyledLink to={`/teacher/discipline/laboratory/${item.laboratory.id}`}>
               <CSCard
-                className={`${classes.labCard} ${this.getCsCardColorClass(item.mark)}`}
+                className={classes.labCard}
                 key={item.laboratory.id}
                 header={item.discipline.name}
                 title={item.laboratory.name}
-                signature={`Отметка: ${item.mark}`}
-                body={item.requirement != null ? item.requirement.Description : ''}
+                signature={`Сдано: ${item.solutionsCount}\n\rСредняя отметка: ${item.markAvg}`}
+                body={item.requirement != null ? item.requirement : ''}
               />
             </StyledLink>
           ))}
@@ -101,11 +86,22 @@ class LaboratoryListStudent extends React.Component {
     return (
       <Box className={classes.mainBlock}>
         <Box className={classes.filterBlock}>
-          <TextField id="search" className={classes.roleSelect} label="Поиск" variant="outlined" name="search" autoComplete="off" onChange={(event) => { this.props.SetSearchText(event.target.value); this.props.getStudentLaboratoryList(this.props.match.params.id, event.target.value); }} value={laboratory.searchText} />
+          <TextField id="search" className={classes.roleSelect} label="Поиск" variant="outlined" name="search" autoComplete="off" onChange={(event) => { this.props.SetSearchText(event.target.value); this.props.getTeacherLaboratoryList(this.props.match.params.id, event.target.value); }} value={laboratory.searchText} />
         </Box>
         <Box className={classes.root}>
           {this.getLabList()}
         </Box>
+        <Fab
+          variant="extended"
+          size="large"
+          color="primary"
+          aria-label="create"
+          className={classes.fabMargin}
+          onClick={() => this.onOpenDialog('userCreateOpen')}
+        >
+          <Add className={classes.fabExtendedIcon} />
+          Создать
+        </Fab>
       </Box>
     );
   }
@@ -116,11 +112,11 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = () => (dispatch) => ({
-  getStudentLaboratoryList: (disciplineId, text) => dispatch(getStudentLaboratoryList(disciplineId, text)),
+  getTeacherLaboratoryList: (disciplineId, text) => dispatch(getTeacherLaboratoryList(disciplineId, text)),
   SetSearchText: (text) => dispatch(SetSearchText(text)),
 });
 
 export default withSnackbar(withStyles(style)(connect(
   mapStateToProps,
   mapDispatchToProps,
-)(LaboratoryListStudent)));
+)(LaboratoryListTeacher)));
