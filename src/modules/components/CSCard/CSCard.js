@@ -5,6 +5,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { Box, IconButton, makeStyles } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
+import StyledLink from '../StyledLink/StyledLink';
 
 const useStyles = makeStyles({
   root: {
@@ -24,22 +25,51 @@ const useStyles = makeStyles({
 export function CSCard(props) {
   const classes = useStyles();
   const buttons = props.buttons || [];
+  if (!props.link) {
+    return (
+      <Card className={`${classes.root} ${[props.className]}`} key={props.key} onClick={props.onClick}>
+        <CardContent>
+          <Typography className={classes.title} gutterBottom>
+            {props.header}
+          </Typography>
+          <Typography variant="h5" component="h2">
+            {props.title}
+          </Typography>
+          <Typography className={classes.pos}>
+            {props.signature}
+          </Typography>
+          <Typography variant="body2" component="p">
+            {props.body}
+          </Typography>
+        </CardContent>
+        <CardActions>
+          {buttons.map((item) => (
+            <IconButton key={new Date().getTime() + Math.random()} size="medium" onClick={() => { item.actionOnClick(props.id); }}>
+              {item.icon}
+            </IconButton>
+          ))}
+        </CardActions>
+      </Card>
+    );
+  }
   return (
     <Card className={`${classes.root} ${[props.className]}`} key={props.key} onClick={props.onClick}>
-      <CardContent>
-        <Typography className={classes.title} gutterBottom>
-          {props.header}
-        </Typography>
-        <Typography variant="h5" component="h2">
-          {props.title}
-        </Typography>
-        <Typography className={classes.pos}>
-          {props.signature}
-        </Typography>
-        <Typography variant="body2" component="p">
-          {props.body}
-        </Typography>
-      </CardContent>
+      <StyledLink to={props.link}>
+        <CardContent>
+          <Typography className={classes.title} gutterBottom>
+            {props.header}
+          </Typography>
+          <Typography variant="h5" component="h2">
+            {props.title}
+          </Typography>
+          <Typography className={classes.pos}>
+            {props.signature}
+          </Typography>
+          <Typography variant="body2" component="p">
+            {props.body}
+          </Typography>
+        </CardContent>
+      </StyledLink>
       <CardActions>
         {buttons.map((item) => (
           <IconButton key={new Date().getTime() + Math.random()} size="medium" onClick={() => { item.actionOnClick(props.id); }}>

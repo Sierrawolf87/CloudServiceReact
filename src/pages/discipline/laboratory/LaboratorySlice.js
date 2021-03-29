@@ -270,4 +270,29 @@ export const getTeacherLaboratoryList = (disciplineId, text = '') => (dispatch) 
     .catch((error) => error);
 };
 
+export const createLaboratory = (data, disciplineId) => (dispatch) => {
+  axios({
+    url: 'Disciplines/LaboratoryWorks',
+    method: 'POST',
+    data,
+  })
+    .then(() => {
+      dispatch(ShowNotification('Лабораторная работа создана', 'success'));
+      dispatch(getTeacherLaboratoryList(disciplineId));
+    })
+    .catch((error) => error);
+};
+
+export const deleteLaboratory = (id, disciplineId) => (dispatch) => {
+  axios({
+    url: `Disciplines/LaboratoryWorks/${id}`,
+    method: 'DELETE',
+  })
+    .then(() => {
+      dispatch(ShowNotification('Лабораторная работа удалена', 'success'));
+      dispatch(getTeacherLaboratoryList(disciplineId));
+    })
+    .catch((error) => error);
+};
+
 export default LaboratorySlice.reducer;
